@@ -1,0 +1,1353 @@
+import { useNavigate, useParams } from "react-router-dom"
+import { Card,CardHeader,CardBody,Button, Form, FormGroup,Label,Input,Row,Col, CardFooter } from "reactstrap"
+import CenteredSpinner from './../CenteredSpinner'
+import { useEffect, useState } from "react"
+import Swal from "sweetalert2"
+import axios from "axios"
+
+import Cotizador from './../Cotizador'
+
+import { server } from './../../db/server'
+import { ordenarPorNombre,formatoFolios,fechaHoraActual } from './../../Functions/funciones'
+
+
+const useFormsFunction = ({id,endpoint,form,location,other})=>{
+
+    const navigator = useNavigate()
+    const [isNew,setIsNew] = useState(false)
+    const [formData,setFormData] = useState({
+       
+    })
+    const [formError,setFormError] = useState({})
+
+    useEffect(()=>{
+        console.log('--------effect--------------')
+        console.log(id)
+
+        const getResApi = async()=>{
+
+            try {
+                const {data} = await axios.get(`${server}api/v1/${endpoint}/${id}`)
+
+            if(data.success){
+                setFormData(data.data)
+                console.log(data.data)
+            }
+            } catch (error) {
+                console.log('[ERROR]',error)
+            }
+            
+
+        }
+
+        if(id === 'new'){
+            setIsNew(true)
+            setFormData(form)
+        }else{
+            getResApi()
+        }
+    },[id])
+    useEffect(()=>{
+
+        console.log('DATA:',formData)
+        console.log('ERROR',formError)
+
+    },[formData])
+
+    const handleChange = (e)=>{
+        e.preventDefault()
+
+        const { name, value,files,type } = e.target
+        if (type === 'file') {
+            setFormData({
+                ...formData,
+                [name]: files
+            });
+        }else{
+            if(isNew){
+                setFormData({
+                    ...formData,
+                    ['status']:'Activo',
+                    [name]:value
+                })
+                setFormError(
+                    {
+                        ...formError,
+                        ['status']:'',
+                        [name]:''
+                    }
+                )            
+            }else{
+                setFormData({
+                    ...formData,
+                    [name]:value
+                })
+                setFormError(
+                    {
+                        ...formError,
+                        [name]:''
+                    }
+                )
+            }
+        }
+        
+        
+        console.log('ESTEES EL CAMBIO',formData)
+    }
+    
+    const handleSubmit = ()=>{
+
+        const formulario = new FormData();
+        let empty={}
+         // Recorre las claves del objeto formulario externo
+        const filteredFormData = Object.keys(form).reduce((acc, key) => {
+        if (formData[key]) {
+            acc[key] = formData[key];
+        }
+        return acc;
+    }, {});
+
+        if(filteredFormData.asociacion){
+            delete filteredFormData['asociacion'] 
+        }
+       
+        for(let input in filteredFormData){
+            if(!filteredFormData[input]){
+                empty[input]='empty'
+            }else if(filteredFormData[input] instanceof FileList){
+                for (let i = 0; i < filteredFormData[input].length; i++) {
+                    formulario.append(`${input}`, filteredFormData[input][i]);
+                }
+            }
+            else{
+                formulario.append(input,filteredFormData[input])               
+            }
+            //Si esta lleno lo metemos a un elemento FormData.append
+        }
+        
+        if(Object.keys(empty).length > 0){
+            setFormError(empty)
+            Swal.fire('Todos los campos deben ser llenados','','warning')
+            return
+        }
+        
+        function appendFormData(data, parentKey = '') {
+            if (data && typeof data === 'object' && !Array.isArray(data) && !(data instanceof Date)) {
+              Object.keys(data).forEach(key => {
+                appendFormData(data[key], parentKey ? `${parentKey}[${key}]` : key);
+              });
+            } else if (Array.isArray(data)) {
+              data.forEach((item, index) => {
+                appendFormData(item, `${parentKey}[${index}]`);
+              });
+            } else {
+                formulario.append(parentKey, data);
+            }
+          }
+          if(other && Object.keys(other).length > 0){
+            appendFormData(other);
+          }
+          
+        if(isNew){
+           
+            Swal.fire({
+                position: "center",
+                icon: "question",
+                title: "ALTA EN BASE DE DATOS",
+                html:`¿Revisate que la información sea correcta?`,
+                showConfirmButton: true,
+                showCancelButton:true,
+                confirmButtonText:'Si, claro',
+                cancelButtonText:'No, espera'
+            }).then(async(result)=>{
+                if(result.isConfirmed){
+                    let urlApi =''
+                    if(endpoint === 'auth/users'){
+                        urlApi=`${server}api/v1/auth/register`
+                    }else{
+                        urlApi=`${server}api/v1/${endpoint}`
+                        console.log(urlApi)
+                    }
+                    const { data } = await axios.post(urlApi,formulario)
+                    
+                    if(data.success){
+                        Swal.fire(
+                            {
+                              position: "center",
+                              icon: "success",
+                              title: "Se creo correctamente",
+                              html:`${data.message}`,
+                              showConfirmButton: true,
+                              // timer: 1500
+                            }
+                            ).then(result=>{
+                                if(result.isConfirmed){
+                                    navigator(location)
+                                }
+                            })
+                    }else{
+                        Swal.fire(`${res.message}`,'','error')
+                    }
+                }
+            })
+           
+        }else{
+            
+            Swal.fire({
+                position: "center",
+                icon: "question",
+                title: "ALTA EN BASE DE DATOS",
+                html:`¿Revisate que la información sea correcta?`,
+                showConfirmButton: true,
+                showCancelButton:true,
+                confirmButtonText:'Si, claro',
+                cancelButtonText:'No, espera'
+            }).then(async(result)=>{
+                if(result.isConfirmed){
+                    const urlApi=`${server}api/v1/${endpoint}/${id}`
+                        console.log(urlApi)
+                        for (let [clave, valor] of formulario.entries()) {
+                            console.log(clave, valor);
+                          }
+                    
+                    const { data } = await axios.patch(urlApi,formulario)
+                    
+                    if(data.success){
+                        Swal.fire(
+                            {
+                              position: "center",
+                              icon: "success",
+                              title: "Se creo correctamente",
+                              html:`${data.message}`,
+                              showConfirmButton: true,
+                              // timer: 1500
+                            }
+                            ).then(result=>{
+                                if(result.isConfirmed){
+                                    navigator(location)
+                                }
+                            })
+                    }
+                }
+            })
+        }
+    }
+
+    return {isNew,formError,handleChange,handleSubmit,formData}
+}
+
+export function FormUsers(){
+   
+    
+    const { id } = useParams()
+    
+    const location = '/gestion/patinadores'
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'users',
+        form:{
+            curp:'',
+            nombre:'',
+            apellido_paterno:'',
+            apellido_materno:'',
+            telefono:'',
+            correo:'',
+            sexo:'',
+            lugar_nacimiento:'',
+            nivel_actual:'',
+            categoria:'',
+            id_asociacion:'',
+            status:'Activo'
+        },
+        location
+    })
+    const [asociaciones,setAsociaciones] = useState([])
+
+    useEffect(()=>{
+        const getAsociaciones = async()=>{
+            try {
+                const { data } = await axios.get(`${server}api/v1/managment/associations`)
+                if(data.success){
+                    setAsociaciones(data.data)
+                }
+            } catch (error) {
+                Swal.fire('Error al cargar asociaciones',error,'error')
+            }
+        }
+
+        getAsociaciones()
+    },[])
+ 
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo Usuario':'Editar Usuario'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-blue-500" > 
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="curp" >CURP</Label>
+                                <Input type="text" name="curp" id="curp"  onChange={handleChange} className={`${formError.curp === 'empty' ? 'border-red-600' : ''}`} value={formData.curp}/>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="nombre" >Nombre(s) </Label>
+                                <Input type="text" name="nombre" id="nombre" placeholder="" onChange={handleChange} className={`${formError.nombre === 'empty' ? 'border-red-600' : ''} `} value={formData.nombre}/>
+                            </FormGroup>
+                        </Col>
+                       
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="apellido_paterno" >Apellido Paterno </Label>
+                                <Input type="text" name="apellido_paterno" id="apellido_paterno" placeholder="" onChange={handleChange} className={`${formError.apellido_paterno === 'empty' ? 'border-red-600' : ''} `} value={formData.apellido_paterno}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="apellido_materno" >Apellido Materno </Label>
+                                <Input type="text" name="apellido_materno" id="apellido_materno" placeholder="" onChange={handleChange} className={`${formError.apellido_materno === 'empty' ? 'border-red-600' : ''} `} value={formData.apellido_materno}/>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="fecha_nacimiento" >Fecha de nacimiento </Label>
+                                <Input type="date" name="fecha_nacimiento" id="fecha_nacimiento" placeholder="" onChange={handleChange} className={`${formError.fecha_nacimiento === 'empty' ? 'border-red-600' : ''} `} value={formData.fecha_nacimiento}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="sexo" >Sexo </Label>
+                                <Input type="select" name="sexo" id="sexo" placeholder="" onChange={handleChange} className={`${formError.sexo === 'empty' ? 'border-red-600' : ''} `} value={formData.sexo}>
+                                    <option value=''>--Selecciona--</option>
+                                    <option value='MASCULINO'>MASCULINO</option>
+                                    <option value='FEMENINO'>FEMENINO</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="lugar_nacimiento" >Lugar de nacimiento</Label>
+                                <Input type="select" name="lugar_nacimiento" id="lugar_nacimiento" placeholder="" onChange={handleChange} className={`${formError.lugar_nacimiento === 'empty' ? 'border-red-600' : ''} `} value={formData.lugar_nacimiento}>
+                                <option value=''>--Selecciona--</option>
+
+                                <option value="Aguascalientes">Aguascalientes</option>
+                                    <option value="Baja California">Baja California</option>
+                                    <option value="Baja California Sur">Baja California Sur</option>
+                                    <option value="Campeche">Campeche</option>
+                                    <option value="Coahuila">Coahuila</option>
+                                    <option value="Colima">Colima</option>
+                                    <option value="Chiapas">Chiapas</option>
+                                    <option value="Chihuahua">Chihuahua</option>
+                                    <option value="Ciudad de México">Ciudad de México</option>
+                                    <option value="Durango">Durango</option>
+                                    <option value="Guanajuato">Guanajuato</option>
+                                    <option value="Guerrero">Guerrero</option>
+                                    <option value="Hidalgo">Hidalgo</option>
+                                    <option value="Jalisco">Jalisco</option>
+                                    <option value="Estado de México">Estado de México</option>
+                                    <option value="Michoacán">Michoacán</option>
+                                    <option value="Morelos">Morelos</option>
+                                    <option value="Nayarit">Nayarit</option>
+                                    <option value="Nuevo León">Nuevo León</option>
+                                    <option value="Oaxaca">Oaxaca</option>
+                                    <option value="Puebla">Puebla</option>
+                                    <option value="Querétaro">Querétaro</option>
+                                    <option value="Quintana Roo">Quintana Roo</option>
+                                    <option value="San Luis Potosí">San Luis Potosí</option>
+                                    <option value="Sinaloa">Sinaloa</option>
+                                    <option value="Sonora">Sonora</option>
+                                    <option value="Tabasco">Tabasco</option>
+                                    <option value="Tamaulipas">Tamaulipas</option>
+                                    <option value="Tlaxcala">Tlaxcala</option>
+                                    <option value="Veracruz">Veracruz</option>
+                                    <option value="Yucatán">Yucatán</option>
+                                    <option value="Zacatecas">Zacatecas</option>
+                                    <option value="Extranjero">Extranjero</option>
+                                </Input>
+
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="categoria" >Categoria</Label>
+                                <Input type="text" name="categoria" id="categoria" placeholder="" onChange={handleChange} className={`${formError.categoria === 'empty' ? 'border-red-600' : ''} `} value={formData.categoria}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="nivel_actual" >Nivel actual </Label>
+                                <Input type="select" name="nivel_actual" id="nivel_actual" placeholder="" onChange={handleChange} className={`${formError.nivel_actual === 'empty' ? 'border-red-600' : ''} `} value={formData.nivel_actual}>
+                                    <option value=''>--Selecciona--</option>
+                                    <option value="Danza">Danza</option>
+                                    <option value="Debutantes 1">Debutantes 1</option>
+                                    <option value="Debutantes 1 Artistic">Debutantes 1 Artistic</option>
+                                    <option value="Debutantes 1 Especial">Debutantes 1 Especial</option>
+                                    <option value="Debutantes 2">Debutantes 2</option>
+                                    <option value="Debutantes 2 Artistic">Debutantes 2 Artistic</option>
+                                    <option value="Debutantes 2 Especial">Debutantes 2 Especial</option>
+                                    <option value="Pre-Básicos">Pre-Básicos</option>
+                                    <option value="Pre-Básicos Artistic">Pre-Básicos Artistic</option>
+                                    <option value="Pre-Básicos Especial">Pre-Básicos Especial</option>
+                                    <option value="Básicos">Básicos</option>
+                                    <option value="Básicos Especial">Básicos Especial</option>
+                                    <option value="Básicos Artistic">Básicos Artistic</option>
+                                    <option value="Pre-preliminar">Pre-preliminar</option>
+                                    <option value="Preliminar">Preliminar</option>
+                                    <option value="Intermedios 1">Intermedios 1</option>
+                                    <option value="Intermedios 2">Intermedios 2</option>
+                                    <option value="Novicios">Novicios</option>
+                                    <option value="Avanzados 1">Avanzados 1</option>
+                                    <option value="Avanzados 2">Avanzados 2</option>
+                                    <option value="Adulto Bronce">Adulto Bronce</option>
+                                    <option value="Adulto Plata">Adulto Plata</option>
+                                    <option value="Adulto Oro">Adulto Oro</option>
+                                    <option value="Adulto Master">Adulto Master</option>
+                                    <option value="Adulto Master Elite">Adulto Master Elite</option>
+                                    <option value="ADULTO PAREJAS">ADULTO PAREJAS</option>
+                                    <option value="ADULTO PAREJAS INTERMEDIATE">ADULTO PAREJAS INTERMEDIATE</option>
+                                    <option value="ADULTO PAREJAS MASTER">ADULTO PAREJAS MASTER</option>
+                                    <option value="ADULTO PAREJAS MASTER ELITE">ADULTO PAREJAS MASTER ELITE</option>
+                                    
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                    </Row>
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="id_asociacion" >Asociacion</Label>
+                                <Input type="select" name="id_asociacion" id="id_asociacion" placeholder="" onChange={handleChange} className={`${formError.id_asociacion === 'empty' ? 'border-red-600' : ''} `} value={formData.id_asociacion}>
+                                    <option value={''} >--Selecciona Asociacion--</option>
+                                    {asociaciones?.map((item,index)=>(
+                                    <option key={`${index}-assoc`} value={item.id}>{item.nombre}</option>
+
+                                    ))}
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                        
+                    </Row>
+                    <Row>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="correo" >Correo</Label>
+                                <Input type="text" name="correo" id="correo" placeholder="" onChange={handleChange} className={`${formError.correo === 'empty' ? 'border-red-600' : ''} `} value={formData.correo}/>
+                            </FormGroup>
+                        </Col>
+                       
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="telefono" >Telefono</Label>
+                                <Input type="text" name="telefono" id="telefono" placeholder="" onChange={handleChange} className={`${formError.telefono === 'empty' ? 'border-red-600' : ''} `} value={formData.telefono}>
+
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                   
+                  
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit}>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+//Revisado
+export function FormaAssociations(){
+    
+    const { id } = useParams()
+    const location = '/gestion/asociaciones'
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'managment/associations',
+        form:{
+            nombre:'',
+            representante:'',
+            correo:'',
+            abreviacion:'',
+            status:'Activo'
+        },
+        location
+    })
+    
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nueva Asociación':'Editar Asociación'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+                   
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="nombre" >Nombre</Label>
+                                <Input type="text" name="nombre" id="nombre"  onChange={handleChange} className={`${formError.nombre === 'empty' ? 'border-red-600' : ''}`} value={formData.nombre}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="abreviacion" >Abreviación</Label>
+                                <Input type="text" name="abreviacion" id="abreviacion" placeholder="" onChange={handleChange} className={`${formError.abreviacion === 'empty' ? 'border-red-600' : ''}`} value={formData.abreviacion}/>
+                            </FormGroup>
+                        </Col>
+                       
+                    </Row>
+                    <Row>
+                        
+                        <Col md={8}>
+                            <FormGroup>
+                                <Label for="representante" >Representante</Label>
+                                <Input type="text" name="representante" id="representante" placeholder="" onChange={handleChange} className={`${formError.representante === 'empty' ? 'border-red-600' : ''}`} value={formData.representante
+                                }/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="correo" >Correo</Label>
+                                <Input type="text" name="correo" id="correo"  onChange={handleChange} className={`${formError.correo === 'empty' ? 'border-red-600' : ''}`} value={formData.correo}/>
+                            </FormGroup>
+                        </Col>
+                        </Row>
+                       
+                        
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                    </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+//Revisado
+export function FormEvents(){
+
+    
+    const { id } = useParams()
+    const location = '/gestion/eventos'
+   
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'managment/events',
+        form:{
+            nombre:'',
+            lugar:'',
+            fecha_inicio:'',
+            fecha_fin:'',
+            texto:'',
+            tipo_competencia:'',
+            status:'Activo'
+        },
+        location
+    })
+    
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo Evento':'Editar Evento'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+                   
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="nombre" >Nombre</Label>
+                                <Input type="text" name="nombre" id="nombre"  onChange={handleChange} className={`${formError.nombre === 'empty' ? 'border-red-600' : ''}`} value={formData.nombre}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="lugar" >Lugar</Label>
+                                <Input type="text" name="lugar" id="lugar" placeholder="" onChange={handleChange} className={`${formError.lugar === 'empty' ? 'border-red-600' : ''}`} value={formData.lugar}/>
+                            </FormGroup>
+                        </Col>
+                       
+                    </Row>
+                    <Row>      
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="fecha_inicio" >Fecha de inicio</Label>
+                                <Input type="date" name="fecha_inicio" id="fecha_inicio" placeholder="" onChange={handleChange} className={`${formError.fecha_inicio === 'empty' ? 'border-red-600' : ''}`} value={formData.fecha_inicio
+                                }/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="fecha_fin" >Fecha de finalización</Label>
+                                <Input type="date" name="fecha_fin" id="fecha_fin"  onChange={handleChange} className={`${formError.fecha_fin === 'empty' ? 'border-red-600' : ''}`} value={formData.fecha_fin}/>
+                            </FormGroup>
+                        </Col>
+                    </Row> 
+                    <Row>      
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="texto" >Descripcion</Label>
+                                <Input type="text" name="texto" id="texto" placeholder="" onChange={handleChange} className={`${formError.texto === 'empty' ? 'border-red-600' : ''}`} value={formData.texto
+                                }/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="tipo_competencia" >Tipo de competencia</Label>
+                                <Input type="select" name="tipo_competencia" id="tipo_competencia"  onChange={handleChange} className={`${formError.tipo_competencia === 'empty' ? 'border-red-600' : ''}`} value={formData.tipo_competencia}>
+                                    <option value=''>--Selecciona Tipo--</option>
+                                    <option value='Internacional'>Internacional</option>
+                                    <option value='Nacional'>Nacional</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                    </Row>               
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                    </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+
+
+//Revisado
+export function FormCommunications(){
+    
+    const { id } = useParams()
+    const location = '/gestion/comunicados'
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'managment/communications',
+        form:{
+            titulo:'',
+            texto1:'',
+            texto2:'',
+            texto3:'',
+            texto4:'',
+            texto5:'',
+            doc:null,
+            img:null,
+            status:'Activo'
+        },
+        location
+    })
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+          const file = event.target.files[0];
+          setSelectedImage(URL.createObjectURL(file));
+        }
+        handleChange(event)
+      };
+  
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo comunicado':'Editar Comunicado'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+                   
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="titulo" >Titulo</Label>
+                                <Input type="text" name="titulo" id="titulo"  onChange={handleChange} className={`${formError.titulo === 'empty' ? 'border-red-600' : ''}`} value={formData.titulo}/>
+                            </FormGroup>
+                        </Col>
+                        
+                       
+                    </Row>
+                    <Row>    
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="texto1" >Texto 1</Label>
+                                <Input type="text" name="texto1" id="texto1" placeholder="" onChange={handleChange} className={`${formError.texto1 === 'empty' ? 'border-red-600' : ''}`} value={formData.texto1}/>
+                            </FormGroup>
+                        </Col></Row><Row>| 
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="texto2" >Texto 2</Label>
+                                <Input type="text" name="texto2" id="texto2" placeholder="" onChange={handleChange} className={`${formError.texto2 === 'empty' ? 'border-red-600' : ''}`} value={formData.texto2}/>
+                            </FormGroup>
+                        </Col></Row><Row>|
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="texto3" >Texto 3</Label>
+                                <Input type="text" name="texto3" id="texto3" placeholder="" onChange={handleChange} className={`${formError.texto3 === 'empty' ? 'border-red-600' : ''}`} value={formData.texto3}/>
+                            </FormGroup>
+                        </Col></Row><Row>|
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="texto4" >Texto 4</Label>
+                                <Input type="text" name="texto4" id="texto4" placeholder="" onChange={handleChange} className={`${formError.texto4 === 'empty' ? 'border-red-600' : ''}`} value={formData.texto4}/>
+                            </FormGroup>
+                        </Col></Row><Row>|
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="texto5" >Texto 5</Label>
+                                <Input type="text" name="texto5" id="texto5" placeholder="" onChange={handleChange} className={`${formError.texto5 === 'empty' ? 'border-red-600' : ''}`} value={formData.texto5}/>
+                            </FormGroup>
+                        </Col>
+                       
+                    </Row> 
+                    <Row>      
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="doc" >Documento del comunicado</Label>
+                                <Input type="file" name="doc" id="doc" placeholder="" onChange={handleChange} className={`${formError.doc === 'empty' ? 'border-red-600' : ''}`} />
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="img" >Imagen muestra</Label>
+                                <Input type="file" name="img" id="img" placeholder="" onChange={handleImageChange} className={`${formError.img === 'empty' ? 'border-red-600' : ''}`} />
+                            </FormGroup>
+                        </Col>
+                        {selectedImage && (
+                            <div className="mt-3 w-40">
+                            <h5>Imagen del comunicado</h5>
+                            <img src={selectedImage} alt="Selected" style={{ maxWidth: '200px', maxHeight: '200px' }} />
+                            </div>
+                        )}
+                        
+                    </Row>               
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                        </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+
+export function FormRegister(){
+    
+    const { id } = useParams()
+    const location = '/gestion/inscripciones'
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'managment/register',
+        form:{
+            nivel_actual:'',
+            categoria:'',
+            status:''
+        },
+        location
+    })
+    
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo evento':'Editar inscripcion'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+               
+                    <Row>      
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="nivel_actual" >Nivel a competir</Label>
+                                <Input type="text" name="nivel_actual" id="nivel_actual" placeholder="" onChange={handleChange} className={`${formError.nivel_actual === 'empty' ? 'border-red-600' : ''}`} value={formData.nivel_actual
+                                }/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="categoria" >Categoria</Label>
+                                <Input type="text" name="categoria" id="categoria"  onChange={handleChange} className={`${formError.categoria === 'empty' ? 'border-red-600' : ''}`} value={formData.categoria}/>
+                            </FormGroup>
+                        </Col>
+                    </Row> 
+                                
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Preincrito'}>Preincrito</option>
+                                    <option value={'aprobado'}>Aprobado</option>
+                                    <option value={'rechazado'}>Rechazado</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                    </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+//Revisado
+export function FormResults(){
+    
+    const { id } = useParams()
+    const location = '/gestion/resultados'
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'managment/results',
+        form:{
+            titulo:'',
+            img:null,
+            carpeta:'',
+            condicion:'vigente',
+            status:'Activo'
+        },
+        location
+    })
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+          const file = event.target.files[0];
+          setSelectedImage(URL.createObjectURL(file));
+        }
+        handleChange(event)
+      };
+  
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo resultado':'Editar Resultado'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+                   
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="titulo" >Titulo</Label>
+                                <Input type="text" name="titulo" id="titulo"  onChange={handleChange} className={`${formError.titulo === 'empty' ? 'border-red-600' : ''}`} value={formData.titulo}/>
+                            </FormGroup>
+                        </Col>
+                        
+                       
+                    </Row>
+                    <Row>    
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="carpeta" >Carpeta</Label>
+                                <Input type="text" name="carpeta" id="carpeta" placeholder="" onChange={handleChange} className={`${formError.carpeta === 'empty' ? 'border-red-600' : ''}`} value={formData.carpeta}/>
+                            </FormGroup>
+                        </Col></Row>
+                        
+                    <Row>      
+                       
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="img" >Imagen muestra</Label>
+                                <Input type="file" name="img" id="img" placeholder="" onChange={handleImageChange} className={`${formError.img === 'empty' ? 'border-red-600' : ''}`} />
+                            </FormGroup>
+                        </Col>
+                        {selectedImage && (
+                            <div className="mt-3 w-40">
+                            <h5>Imagen del boton de resultado</h5>
+                            <img src={selectedImage} alt="Selected" style={{ maxWidth: '200px', maxHeight: '200px' }} />
+                            </div>
+                        )}
+                        
+                    </Row>               
+                    {!isNew && (
+                        <div>
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                        </Row>
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="condicion" >Condicion</Label>
+                                <Input type="select" name="condicion" id="condicion" onChange={handleChange} className={`${formError.condicion ? 'border-red-600' : ''}`} value={formData.condicion}>
+                                    <option value={'vigente'}>VIGENTE</option>
+                                    <option value={'pasado'}>PASADO</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                        </Row>
+                        </div>
+                        
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+
+export function FormExams(){
+    console.log('FORMULARIO EXAMEN NUEVO')
+    
+    const { id } = useParams()
+    const location = '/gestion/examenes'
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+        id,
+        endpoint:'exams',
+        form:{
+            curp:'',
+            lugar:'',
+            fecha_examen:'',
+            fecha_solicitud:'',
+            status:'Activo'
+        },
+        location
+    })
+    
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo Examen':'Editar Examen'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+                   
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="curp" >CURP del pationador</Label>
+                                <Input type="text" name="curp" id="curp"  onChange={handleChange} className={`${formError.curp === 'empty' ? 'border-red-600' : ''}`} value={formData.curp}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="lugar" >Lugar</Label>
+                                <Input type="text" name="lugar" id="lugar" placeholder="" onChange={handleChange} className={`${formError.lugar === 'empty' ? 'border-red-600' : ''}`} value={formData.lugar}/>
+                            </FormGroup>
+                        </Col>
+                       
+                    </Row>
+                    <Row>      
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="fecha_solicitud" >Fecha de Solicitud</Label>
+                                <Input type="date" name="fecha_solicitud" id="fecha_solicitud" placeholder="" onChange={handleChange} className={`${formError.fecha_solicitud === 'empty' ? 'border-red-600' : ''}`} value={formData.fecha_solicitud
+                                }/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="fecha_examen" >Fecha de Examen</Label>
+                                <Input type="date" name="fecha_examen" id="fecha_examen"  onChange={handleChange} className={`${formError.fecha_examen === 'empty' ? 'border-red-600' : ''}`} value={formData.fecha_examen}/>
+                            </FormGroup>
+                        </Col>
+                    </Row> 
+                                 
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                    </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+
+export function FormExamsEdit(){
+    const [isNew,setIsNew] = useState(false)
+    const { id,year } = useParams()
+    const [formData,setFormData] = useState({
+       
+    })
+    const [formError,setFormError] = useState({})
+
+    const location = '/gestion/examenes'
+    useEffect(()=>{
+
+        console.log()
+        if(id!== 'new'){
+            setIsNew(false)
+        }
+
+        const getData = async ()=>{
+            try {
+                const { data } = await axios.get(`${server}api/v1/exams/get-one/${year}/${id}`)
+                console.log('Datos de examen',data)
+                setFormData(data.data)
+            } catch (error) {
+                Swal.fire('Algo salio mal',`No se puedo descargar la informacion ${error.message}`,'error')
+            }
+        }
+
+        getData()
+    },[])
+    const handleChange = (e)=>{
+        e.preventDefault()
+
+        const { name, value,files,type } = e.target
+        if (type === 'file') {
+            setFormData({
+                ...formData,
+                [name]: files
+            });
+        }else{
+            if(isNew){
+                setFormData({
+                    ...formData,
+                    ['status']:'Activo',
+                    [name]:value
+                })
+                setFormError(
+                    {
+                        ...formError,
+                        ['status']:'',
+                        [name]:''
+                    }
+                )            
+            }else{
+                setFormData({
+                    ...formData,
+                    [name]:value
+                })
+                setFormError(
+                    {
+                        ...formError,
+                        [name]:''
+                    }
+                )
+            }
+        }
+        
+        
+        console.log('ESTEES EL CAMBIO',formData)
+    }
+    
+    const handleSubmit = ()=>{
+
+        const formulario = new FormData();
+        let empty={}
+         // Recorre las claves del objeto formulario externo
+        const filteredFormData = Object.keys(form).reduce((acc, key) => {
+        if (formData[key]) {
+            acc[key] = formData[key];
+        }
+        return acc;
+        }, {});
+
+        if(filteredFormData.asociacion){
+            delete filteredFormData['asociacion'] 
+        }
+       
+        for(let input in filteredFormData){
+            if(!filteredFormData[input]){
+                empty[input]='empty'
+            }else if(filteredFormData[input] instanceof FileList){
+                for (let i = 0; i < filteredFormData[input].length; i++) {
+                    formulario.append(`${input}`, filteredFormData[input][i]);
+                }
+            }
+            else{
+                formulario.append(input,filteredFormData[input])               
+            }
+            //Si esta lleno lo metemos a un elemento FormData.append
+        }
+        
+        if(Object.keys(empty).length > 0){
+            setFormError(empty)
+            Swal.fire('Todos los campos deben ser llenados','','warning')
+            return
+        }
+        
+        function appendFormData(data, parentKey = '') {
+            if (data && typeof data === 'object' && !Array.isArray(data) && !(data instanceof Date)) {
+              Object.keys(data).forEach(key => {
+                appendFormData(data[key], parentKey ? `${parentKey}[${key}]` : key);
+              });
+            } else if (Array.isArray(data)) {
+              data.forEach((item, index) => {
+                appendFormData(item, `${parentKey}[${index}]`);
+              });
+            } else {
+                formulario.append(parentKey, data);
+            }
+          }
+          if(other && Object.keys(other).length > 0){
+            appendFormData(other);
+          }
+          
+        if(isNew){
+           
+            Swal.fire({
+                position: "center",
+                icon: "question",
+                title: "ALTA EN BASE DE DATOS",
+                html:`¿Revisate que la información sea correcta?`,
+                showConfirmButton: true,
+                showCancelButton:true,
+                confirmButtonText:'Si, claro',
+                cancelButtonText:'No, espera'
+            }).then(async(result)=>{
+                if(result.isConfirmed){
+                    let urlApi =''
+                    if(endpoint === 'auth/users'){
+                        urlApi=`${server}api/v1/auth/register`
+                    }else{
+                        urlApi=`${server}api/v1/${endpoint}`
+                        console.log(urlApi)
+                    }
+                    const { data } = await axios.post(urlApi,formulario)
+                    
+                    if(data.success){
+                        Swal.fire(
+                            {
+                              position: "center",
+                              icon: "success",
+                              title: "Se creo correctamente",
+                              html:`${data.message}`,
+                              showConfirmButton: true,
+                              // timer: 1500
+                            }
+                            ).then(result=>{
+                                if(result.isConfirmed){
+                                    navigator(location)
+                                }
+                            })
+                    }else{
+                        Swal.fire(`${res.message}`,'','error')
+                    }
+                }
+            })
+           
+        }else{
+            
+            Swal.fire({
+                position: "center",
+                icon: "question",
+                title: "ALTA EN BASE DE DATOS",
+                html:`¿Revisate que la información sea correcta?`,
+                showConfirmButton: true,
+                showCancelButton:true,
+                confirmButtonText:'Si, claro',
+                cancelButtonText:'No, espera'
+            }).then(async(result)=>{
+                if(result.isConfirmed){
+                    const urlApi=`${server}api/v1/${endpoint}/${id}`
+                        console.log(urlApi)
+                        for (let [clave, valor] of formulario.entries()) {
+                            console.log(clave, valor);
+                          }
+                    
+                    const { data } = await axios.patch(urlApi,formulario)
+                    
+                    if(data.success){
+                        Swal.fire(
+                            {
+                              position: "center",
+                              icon: "success",
+                              title: "Se creo correctamente",
+                              html:`${data.message}`,
+                              showConfirmButton: true,
+                              // timer: 1500
+                            }
+                            ).then(result=>{
+                                if(result.isConfirmed){
+                                    navigator(location)
+                                }
+                            })
+                    }
+                }
+            })
+        }
+    }
+
+   
+    
+
+    return (
+        <Card className='m-2 rounded-xl shadow mt-4 mb-2'>
+            <CardHeader>
+                <h3>{isNew ? 'Nuevo Examen':'Editar Examen'}</h3>
+            </CardHeader>
+            <CardBody>
+                <Form className="text-curious-blue-700" > 
+                   
+                    <Row>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="curp" >CURP del pationador</Label>
+                                <Input type="text" name="curp" id="curp"  onChange={handleChange} className={`${formError.curp === 'empty' ? 'border-red-600' : ''}`} value={formData.curp}/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={4}>
+                            <FormGroup>
+                                <Label for="lugar" >Lugar</Label>
+                                <Input type="text" name="lugar" id="lugar" placeholder="" onChange={handleChange} className={`${formError.lugar === 'empty' ? 'border-red-600' : ''}`} value={formData.lugar}/>
+                            </FormGroup>
+                        </Col>
+                       
+                    </Row>
+                    <Row>      
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="fecha_solicitud" >Fecha de Solicitud</Label>
+                                <Input type="date" name="fecha_solicitud" id="fecha_solicitud" placeholder="" onChange={handleChange} className={`${formError.fecha_solicitud === 'empty' ? 'border-red-600' : ''}`} value={formData.fecha_solicitud
+                                }/>
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="fecha_examen" >Fecha de Examen</Label>
+                                <Input type="date" name="fecha_examen" id="fecha_examen"  onChange={handleChange} className={`${formError.fecha_examen === 'empty' ? 'border-red-600' : ''}`} value={formData.fecha_examen}/>
+                            </FormGroup>
+                        </Col>
+                    </Row> 
+                                 
+                    {!isNew && (
+                        <Row>
+                        <Col md={12}>
+                            <FormGroup>
+                                <Label for="status" >Estatus</Label>
+                                <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
+                                    <option value={'Activo'}>ACTIVO</option>
+                                    <option value={'Baja'}>BAJA</option>
+                                </Input>
+                            </FormGroup>
+                        </Col>
+                        
+                    </Row>
+                    )}
+                    
+                </Form>
+            </CardBody>
+            <CardFooter>
+                <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
+            </CardFooter>
+
+
+        </Card>
+    )
+}
+
+
+
