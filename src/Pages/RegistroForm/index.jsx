@@ -337,8 +337,6 @@ export default function FormRegistro(){
             <CardFooter>
                 <Button onClick={handleSubmit} className='bg-curious-blue-500 hover:bg-curious-blue-600'>Guardar</Button>
             </CardFooter>
-
-
         </Card>
     )
 }

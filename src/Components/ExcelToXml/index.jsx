@@ -77,7 +77,6 @@ export default function ExceltToXml(){
             data: ["", ``, "", "", "aprobado"],
             codigoCompetencia: codigoValor
           };
-        console.log(rowData["Asociacion"])
 
         });
         console.log(formattedData);

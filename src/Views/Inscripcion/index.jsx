@@ -28,10 +28,13 @@ export default function Inscripcion(){
 
 
     useEffect(()=>{
+        console.log('el ID a consultar es:',id)
         const fetchData = async()=>{
             try {
                 setLoading(true)
-                const {data} = await axios.get(`${server}api/v1/managment/register/${id}`)
+                const {data} = await axios.get(`${server}api/v1/register/${id}`)
+                console.log(data)
+
                 if(data.success){
                     console.log(data.data)
                     setUser(data.data) 
@@ -63,7 +66,7 @@ export default function Inscripcion(){
         <FaEdit onClick={handleEdit}/>
         </div>
         {/* https://femepashidi.siradiacion.com.mx/images/users/ */}
-            <CardTitle className="flex font-bold"> {user.curp} </CardTitle>
+            <CardTitle className="flex font-bold"> {user.user.curp} </CardTitle>
             <img className='w-40'
             src={`https://femepashidi.siradiacion.com.mx/images/users/${user.user.img}`} />
             <CardHeader className="flex flex-col justify-between bg-white">

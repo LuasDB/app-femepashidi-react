@@ -153,13 +153,25 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   const etiquetasFemeniles = {
       'Avanzados 2': 'FSKWSINGLES-----------------------',
       'Avanzados 1': 'FSKWSINGLES-JUNIOR----------------',
-      'Novicios': 'FSKWSINGLES-ADVNOV----------------'
+      'ADVANCED NOVICE':'FSKWSINGLES-ADVNOV----------------',
+      'Novice':'FSKWSINGLES-ADVNOV----------------',
+      'Novicios': 'FSKWSINGLES-ADVNOV----------------',
+      'JUNIOR':'FSKWSINGLES-JUNIOR----------------',
+      'SENIOR':'FSKWSINGLES-SENIOR----------------',
+      'Junior':'FSKWSINGLES-JUNIOR----------------',
+      'Senior':'FSKWSINGLES-SENIOR----------------',
   };
   
   const etiquetasVaroniles = {
       'Avanzados 2': 'FSKMSINGLES-----------------------',
       'Avanzados 1': 'FSKMSINGLES-JUNIOR----------------',
-      'Novicios': 'FSKMSINGLES-ADVNOV----------------'
+      'Novicios': 'FSKMSINGLES-ADVNOV----------------',
+      'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
+      'Novice':'FSKMSINGLES-ADVNOV----------------',
+      'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
+      'SENIOR':'FSKMSINGLES-SENIOR----------------',
+      'Junior':'FSKMSINGLES-JUNIOR----------------',
+      'Senior':'FSKMSINGLES-SENIOR----------------',
   };
 
   // Etiquetas de niveles con categoría
@@ -171,7 +183,10 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'Pre-preliminar Especial':'FSKWSINGLES-PPECAT----------------',
       'Básicos':'FSKWSINGLES-BASCAT----------------',
       'Básicos Especial':'FSKWSINGLES-BAECAT----------------',
+      'Basicos':'FSKWSINGLES-BASCAT----------------',
+      'Basicos Especial':'FSKWSINGLES-BAECAT----------------',
       'Pre-Básicos':'FSKWSINGLES-PRBCAT----------------',
+      'Pre-Basicos':'FSKWSINGLES-PRBCAT----------------',
       'PRE BÁSICOS':'FSKWSINGLES-PRBCAT----------------',
       'Pre-Básicos Especial':'FSKWSINGLES-PRECAT----------------',
       'Debutantes 2':'FSKWSINGLES-DE2CAT----------------',
@@ -188,6 +203,53 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'Adulto Oro Artistico':'FSKWSINGLES-GOACAT----------------',
       'Adulto Master Artistico':'FSKWSINGLES-MAACAT----------------',
       'Adulto Elite Artistico':'FSKWSINGLES-ELACAT----------------',
+      'Pre-Preliminary':'FSKWSINGLES-PPYCAT----------------',
+      'Pre-Preliminary Special':'FSKWSINGLES-PYSCAT----------------',
+      'Preliminary':'FSKWSINGLES-PRYCAT----------------',
+      'Juvenile':'FSKWSINGLES-JUVCAT----------------',
+      'Intermediate':'FSKWSINGLES-INTCAT----------------',
+
+      'Open Pre-Preliminary':'FSKWSINGLES-PPYCAT----------------',
+      'Open Pre-Preliminary Special':'FSKWSINGLES-PYSCAT----------------',
+      'Open Preliminary':'FSKWSINGLES-PRYCAT----------------',
+      'Open Juvenile':'FSKWSINGLES-JUVCAT----------------',
+      'Open Intermediate':'FSKWSINGLES-INTCAT----------------',
+
+      'Adult Bronze':'FSKWSINGLES-BRTCAT----------------',
+      'Adult Bronze Artistic':'FSKWSINGLES-BRACAT----------------',
+      'Adult Silver':'FSKWSINGLES-SITCAT----------------',
+      'Adult Silver Artistic':'FSKWSINGLES-SIACAT----------------',
+      'Adult Gold':'FSKWSINGLES-GOTCAT----------------',
+      'Adult Gold Artistic':'FSKWSINGLES-GOACAT----------------',
+      'Adult Master':'FSKWSINGLES-MATCAT----------------',
+      'Adult Master Artistic':'FSKWSINGLES-MAACAT----------------',
+      'Adult Elite':'FSKWSINGLES-ELTCAT----------------',
+      'Adult Elite Artistic':'FSKWSINGLES-ELACAT----------------',
+
+      'Bronze':'FSKWSINGLES-BRTCAT----------------',
+      'Bronze Artistic':'FSKWSINGLES-BRACAT----------------',
+      'Bronze Special Artistic':'FSKWSINGLES-BEACAT----------------',
+      
+      'Silver':'FSKWSINGLES-SITCAT----------------',
+      'Silver Artistic':'FSKWSINGLES-SIACAT----------------',
+      'Gold':'FSKWSINGLES-GOTCAT----------------',
+      'Gold Artistic':'FSKWSINGLES-GOACAT----------------',
+      'Master':'FSKWSINGLES-MATCAT----------------',
+      'Master Artistic':'FSKWSINGLES-MAACAT----------------',
+      'Elite':'FSKWSINGLES-ELTCAT----------------',
+      'Elite Artistic':'FSKWSINGLES-ELACAT----------------',
+
+
+
+      'PRE-PRELIMINARY':'FSKWSINGLES-PPYCAT----------------',
+      'PRE-PRELIMINARY SPECIAL':'FSKWSINGLES-PYSCAT----------------',
+      'PRELIMINARY':'FSKWSINGLES-PRYCAT----------------',
+      'JUVENILE':'FSKWSINGLES-JUVCAT----------------',
+      'INTERMEDIATE':'FSKWSINGLES-INTCAT----------------',
+     
+
+
+
   };
   
   const etiquetasVaronilesCat = {
@@ -197,7 +259,9 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
     'Pre-preliminar':'FSKMSINGLES-PPRCAT----------------',
     'Pre-preliminar Especial':'FSKMSINGLES-PPECAT----------------',
     'Básicos':'FSKMSINGLES-BASCAT----------------',
+    'Basicos':'FSKMSINGLES-BASCAT----------------',
     'Pre-Básicos':'FSKMSINGLES-PRBCAT----------------',
+    'Pre-Basicos':'FSKMSINGLES-PRBCAT----------------',
     'PRE BÁSICOS':'FSKMSINGLES-PRBCAT----------------',
     'Debutantes 2':'FSKMSINGLES-DE2CAT----------------',
     'Debutantes 2 Especial':'FSKMSINGLES-D2ECAT----------------',
@@ -214,9 +278,52 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
     'Adulto Master Artistico':'FSKMSINGLES-MAACAT----------------',
     'Adulto Elite Artistico':'FSKMSINGLES-ELACAT----------------',
     'Básicos Especial':'FSKMSINGLES-BAECAT----------------',
+    'Basicos Especial':'FSKMSINGLES-BAECAT----------------',
     'Pre-Básicos Especial':'FSKMSINGLES-PRECAT----------------',
-    
+    'Pre-Preliminary':'FSKMSINGLES-PPYCAT----------------',
+    'Pre-Preliminary Special':'FSKMSINGLES-PYSCAT----------------',
+    'Preliminary':'FSKMSINGLES-PRYCAT----------------',
+    'Juvenile':'FSKMSINGLES-JUVCAT----------------',
+    'Intermediate':'FSKMSINGLES-INTCAT----------------',
 
+    'Open Pre-Preliminary':'FSKMSINGLES-PPYCAT----------------',
+    'Open Pre-Preliminary Special':'FSKMSINGLES-PYSCAT----------------',
+    'Open Preliminary':'FSKMSINGLES-PRYCAT----------------',
+    'Open Juvenile':'FSKMSINGLES-JUVCAT----------------',
+    'Open Intermediate':'FSKMSINGLES-INTCAT----------------',
+
+    'Adult Bronze':'FSKMSINGLES-BRTCAT----------------',
+    'Adult Bronze Artistic':'FSKMSINGLES-BRACAT----------------',
+    'Adult Silver':'FSKMSINGLES-SITCAT----------------',
+    'Adult Silver Artistic':'FSKMSINGLES-SIACAT----------------',
+    'Adult Gold':'FSKMSINGLES-GOTCAT----------------',
+    'Adult Gold Artistic':'FSKMSINGLES-GOACAT----------------',
+    'Adult Master':'FSKMSINGLES-MATCAT----------------',
+    'Adult Master Artistic':'FSKMSINGLES-MAACAT----------------',
+    'Adult Elite':'FSKMSINGLES-ELTCAT----------------',
+    'Adult Elite Artistic':'FSKMSINGLES-ELACAT----------------',
+
+    'Bronze':'FSKMSINGLES-BRTCAT----------------',
+    'Bronze Artistic':'FSKMSINGLES-BRACAT----------------',
+    'Bronze Special Artistic':'FSKMSINGLES-BEACAT----------------',
+    'Silver':'FSKMSINGLES-SITCAT----------------',
+    'Silver Artistic':'FSKMSINGLES-SIACAT----------------',
+    'Gold':'FSKMSINGLES-GOTCAT----------------',
+    'Gold Artistic':'FSKMSINGLES-GOACAT----------------',
+    'Master':'FSKMSINGLES-MATCAT----------------',
+    'Master Artistic':'FSKMSINGLES-MAACAT----------------',
+    'Elite':'FSKMSINGLES-ELTCAT----------------',
+    'Elite Artistic':'FSKMSINGLES-ELACAT----------------',
+
+    'PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
+    'PRE-PRELIMINARY SPECIAL':'FSKMSINGLES-PYSCAT----------------',
+    'PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
+    'JUVENILE':'FSKMSINGLES-JUVCAT----------------',
+    'INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
+    'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
+    'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
+    'SENIOR':'FSKMSINGLES-SENIOR----------------',
+    
 };
 
   // Mapeo de categoría a Id_Categoría
@@ -232,6 +339,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'MAYOR': 'MAY',
       'CLASS I':'CL1',
       'CLASS II':'CL2',
+      'CALSS II':'CL2',
       'CLASS III':'CL3',
       'CLASS IV':'CL4',
       'CLASE I':'CL1',
@@ -242,7 +350,16 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'Clase II':'CL2',
       'Clase III':'CL3',
       'Clase IV':'CL4',
-      'ADULTO':'ADU'
+      'ADULTO':'ADU',
+      'A':'AAA',
+      'B':'BBB',
+      'C':'CCC',
+      'D':'DDD',
+      'Mayor':'MAY',
+      'Adulto':'ADU',
+
+
+
   };
 
   // Verificar si el nivel requiere categoría
@@ -263,6 +380,74 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   return etiqueta || 'Nivel o género no válido';
 }
 
+function obtenerCategoria(fechaNacimiento, nivel) {
+  const fecha = new Date(fechaNacimiento);
+  const cutoffDate = new Date('2025-07-01');
+
+  const edadAlCorte = cutoffDate.getFullYear() - fecha.getFullYear() - (
+    cutoffDate < new Date(cutoffDate.getFullYear(), fecha.getMonth(), fecha.getDate()) ? 1 : 0
+  );
+
+  const time = fecha.getTime();
+
+  // Convertimos los rangos a timestamps para comparar más fácilmente
+  const rangos = {
+    'PRE-INFANTIL': [
+      new Date('2021-07-01').getTime(),
+      new Date('2025-06-30').getTime()
+    ],
+    'INFANTIL A': [
+      new Date('2018-07-01').getTime(),
+      new Date('2021-06-30').getTime()
+    ],
+    'INFANTIL B': [
+      new Date('2015-07-01').getTime(),
+      new Date('2018-06-30').getTime()
+    ],
+    'JUVENIL A': [
+      new Date('2011-07-01').getTime(),
+      new Date('2015-06-30').getTime()
+    ],
+    'JUVENIL B': [
+      new Date('2007-07-01').getTime(),
+      new Date('2011-06-30').getTime()
+    ],
+    'MAYOR': [
+      new Date('1997-07-01').getTime(),
+      new Date('2007-06-30').getTime()
+    ]
+  };
+
+  if (nivel === 'NOVICIOS') {
+    if (edadAlCorte >= 10 && edadAlCorte < 16) {
+      return 'NOVICIOS (ADVANCED NOVICE) ISU';
+    }
+  } else if (nivel === 'AVANZADOS 1') {
+    if (edadAlCorte >= 13 && edadAlCorte < 19) {
+      return 'AVANZADOS 1 (JUNIOR) ISU';
+    }
+  } else if (nivel === 'AVANZADOS 2') {
+    if (edadAlCorte >= 17) {
+      return 'AVANZADOS 2 (SENIOR) ISU';
+    }
+  } else {
+    // Resto de niveles por fecha
+    for (const [categoria, [inicio, fin]] of Object.entries(rangos)) {
+      if (time >= inicio && time <= fin) {
+        return categoria;
+      }
+    }
+
+    // Adulto: nacido antes del 1 de julio de 1997
+    if (time < new Date('1997-07-01').getTime()) {
+      return 'ADULTO';
+    }
+  }
+
+  return 'Sin categoría aplicable';
+}
+
+
 export { 
   ordenarPorNombre,
   formatoFecha,
@@ -273,5 +458,11 @@ export {
   generarListaYears,
   ordenarPorItem,
   fechaHoraActual,
-  formatoNombre,fechaActual,obtenerTimestamp,formatoDosDigitos,obtenerEtiqueta,generateUID
- }
+  formatoNombre,
+  fechaActual,
+  obtenerTimestamp,
+  formatoDosDigitos,
+  obtenerEtiqueta,
+  generateUID,
+  obtenerCategoria
+}

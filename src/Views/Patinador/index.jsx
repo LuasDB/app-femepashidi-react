@@ -2,6 +2,8 @@ import {useEffect, useState } from 'react'
 import { Card,CardHeader,Button,Label, CardTitle, CardBody, Table, CardText,Row,Col, FormGroup, Input} from "reactstrap";
 import { useParams,useNavigate,Link} from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
 
 import CenteredSpinner from '../../Components/CenteredSpinner';
 
@@ -21,11 +23,8 @@ export default function Servicio(){
     const [loading,setLoading] = useState(true)
     const [isFetched, setIsFetched] = useState(false);
     const [user,setUser] = useState({})
-    
-    
-    
-
-
+    const navigate = useNavigate()
+ 
     useEffect(()=>{
         const fetchData = async()=>{
             try {
@@ -49,6 +48,37 @@ export default function Servicio(){
         }
     },[isFetched])
 
+    const handleDelete = async()=>{
+
+        Swal.fire({
+            position: "center",
+            icon: "question",
+            title: "¿Deseas eliminar este registro?",
+            html:`Esta acción no podra revertirse`,
+            showConfirmButton: true,
+            showCancelButton:true,
+            confirmButtonText:'Si, claro',
+            cancelButtonText:'No, espera'
+        }).then(async(result)=>{
+            if(result.isConfirmed){
+                try {
+                    const { data } = await axios.delete(`${server}api/v1/managment/one/users/${id}`)
+                    if(data.success){
+                        Swal.fire('Elemento eliminado',data.message,'success').then(response=>{
+                            if(response.isConfirmed){
+                                navigate('/gestion/patinadores')
+                            }
+                        })
+                    }
+                } catch (error) {
+                    Swal.fire('Algo salio mal', `No se puede eliminar el usuario ${user.curp}. Error:${error.message}`,'error')
+                }
+            }
+                        })
+                
+
+      
+    }
     
     return (
         <>
@@ -60,6 +90,7 @@ export default function Servicio(){
         <Link to={`/gestion/forms/usuarios/${id}`}>
             <FaEdit />
         </Link>
+        <MdDelete className='text-red-500 hover:text-red-700' onClick={handleDelete}/>
        
         </div>
         {/* https://femepashidi.siradiacion.com.mx/images/users/ */}

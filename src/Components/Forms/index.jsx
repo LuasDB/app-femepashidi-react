@@ -196,7 +196,7 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
             Swal.fire({
                 position: "center",
                 icon: "question",
-                title: "ALTA EN BASE DE DATOS",
+                title: "ACTUALIZACIÓN EN BASE DE DATOS",
                 html:`¿Revisate que la información sea correcta?`,
                 showConfirmButton: true,
                 showCancelButton:true,
@@ -210,7 +210,11 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
                             console.log(clave, valor);
                           }
                     
-                    const { data } = await axios.patch(urlApi,formulario)
+                    const { data } = await axios.patch(urlApi,formulario,{
+                        headers:{
+                            "Content-Type":"application/json"
+                        }
+                    })
                     
                     if(data.success){
                         Swal.fire(
@@ -644,8 +648,9 @@ export function FormEvents(){
                                 <Label for="tipo_competencia" >Tipo de competencia</Label>
                                 <Input type="select" name="tipo_competencia" id="tipo_competencia"  onChange={handleChange} className={`${formError.tipo_competencia === 'empty' ? 'border-red-600' : ''}`} value={formData.tipo_competencia}>
                                     <option value=''>--Selecciona Tipo--</option>
-                                    <option value='Internacional'>Internacional</option>
                                     <option value='Nacional'>Nacional</option>
+                                    <option value='Open Internacional'>⁠Open Internacional</option>
+                                    <option value='⁠Internacional ISU'>⁠Internacional ISU</option>
                                 </Input>
                             </FormGroup>
                         </Col>
@@ -816,7 +821,7 @@ export function FormRegister(){
 
     const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
         id,
-        endpoint:'managment/register',
+        endpoint:'register',
         form:{
             nivel_actual:'',
             categoria:'',
