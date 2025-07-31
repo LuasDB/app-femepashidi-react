@@ -1,38 +1,54 @@
 import { useEffect, useState } from 'react'
-import { TablaServicios } from '../../Components/Tabla'
+import { TablaPatinadores } from '../../Components/Tabla'
 import CenteredSpinner  from '../../Components/CenteredSpinner'
+import { Button, Card, CardBody, CardFooter, CardHeader, Label, Table,Input, FormGroup } from "reactstrap";
 
 import { server } from '../../db/server'
 import { ordenarPorNombre,ordenarPorItem, formatoFecha } from '../../Functions/funciones'
 
 import axios from 'axios';
 
-const useFetchDataTables = ({collection,server})=>{
+
+export default function Patinadores(){
     const [data,setData]=useState([])
     const [loading,setLoading] = useState(true)
     const [error,setError]=useState(null)
     const [isFetched, setIsFetched] = useState(false);
+    //Para la paginación
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(10)
+    const [total,setTotal] = useState(0)
+    const [search,setSearch] = useState('')
+
 
 
     useEffect(()=>{
         const fetchData = async()=>{
             try {
-                setLoading(true)
-                console.log(`${server}api/v1${collection}`)
-                const { data } = await axios.get(`${server}api/v1${collection}`)
-                console.log(data)
+                const { data:dataOrder } = await axios.get(`${server}api/v1/skaters`,{
+                    params:{
+                        page,
+                        limit,
+                        search
+                    }
+                })
     
-                if(data.success){
-                    const dataOrder = ordenarPorItem(data.data,'apellido_paterno')
-                    const orderArray = dataOrder.map(item=>({
-                        id:item.id,
+                if(dataOrder.success){
+                    console.log(dataOrder)
+                    const orderArray = dataOrder.data.map(item=>({
+                        id:item._id,
                         data:[item.curp, `${item.nombre} ${item.apellido_paterno} ${item.apellido_materno}`,item.nivel_actual,formatoFecha(item.fecha_nacimiento),item.asociacion.nombre],
-                        content:item
+                        content:item,
+                        curp:item.curp
                     }))
                     setData(orderArray)
                     setIsFetched(true);
+                    setTotal(dataOrder.total)
             
-                }else{console.log('No funciona')}
+                }else{
+                    setData([])
+                    setTotal(0)
+                }
                 }catch (error) {
                 setError(error) 
                 }finally{
@@ -40,22 +56,17 @@ const useFetchDataTables = ({collection,server})=>{
                 }
         }
         
-        if (!isFetched) {
-            fetchData();
-        }
         
-    },[isFetched])
+    
+        fetchData();
+        
+        
+    },[page,limit,search])
 
-    return {
-        data,error,loading
-    }
-}
-
-export default function Patinadores(){
-    const { data,error,loading } = useFetchDataTables({
-        collection:'/managment/users',
-        server
-    }) 
+    const handleChangeSearch = (e) => {
+    const word = e.target.value
+    setSearch(word)
+  }
     
     return (
     <>
@@ -63,13 +74,19 @@ export default function Patinadores(){
         {loading && (<CenteredSpinner />)}
 
         {!loading && (<div>
-            <TablaServicios 
-                className='w-100'
-                path={'/gestion/view/patinadores/'} 
-                encabezados={['CURP','NOMBRE','NIVEL','FECHA DE NACIMEINTO','ASOCIACIÓN','VER']}
+         <CardFooter className='mb-4'>
+          <Input type="text" placeholder="Buscar por..." onChange={handleChangeSearch} value={search} />
+        </CardFooter>
+            <TablaPatinadores 
+                path="/gestion/view/patinadores/"
+                encabezados={['CURP', 'NOMBRE', 'NIVEL', 'FECHA DE NACIMIENTO', 'ASOCIACIÓN', 'VER']}
                 data={data}
-                title={'Patinadores'}
-                collection={'users'}
+                title="Patinadores"
+                collection="skaters"
+                page={page}
+                limit={limit}
+                total={total}
+                onPageChange={setPage}
             />
         </div>)}
            

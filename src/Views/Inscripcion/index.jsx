@@ -38,6 +38,7 @@ export default function Inscripcion(){
                 if(data.success){
                     console.log(data.data)
                     setUser(data.data) 
+                    console.log(data.data.user.img.path)
                     
                 }              
             } catch (error) {
@@ -67,8 +68,10 @@ export default function Inscripcion(){
         </div>
         {/* https://femepashidi.siradiacion.com.mx/images/users/ */}
             <CardTitle className="flex font-bold"> {user.user.curp} </CardTitle>
-            <img className='w-40'
-            src={`https://femepashidi.siradiacion.com.mx/images/users/${user.user.img}`} />
+            <div className="w-40 h-40 md:w-48 md:h-48 rounded-full relative overflow-hidden border-4 border-white shadow-md cursor-pointer">
+            <img src={`${server}${user.user.img.path}` || 'https://via.placeholder.com/200'} alt="Foto del patinador" className="w-full h-full object-cover" />
+            </div>
+            {console.log(`${server}${user.user.img.path}`)}
             <CardHeader className="flex flex-col justify-between bg-white">
                 <CardTitle className='font-bold text-curious-blue-900'> </CardTitle>
                     

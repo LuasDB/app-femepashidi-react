@@ -30,13 +30,13 @@ const useFetchDataTables = ({collection,server})=>{
         try {
             setLoading(true)
             
-            const { data } = await axios.get(`${server}api/v1/${collection}/get/event/by/${selectedEvent}`)
+            const { data } = await axios.get(`${server}api/v1/${collection}/event/${selectedEvent}`)
             console.log(data)
 
             if(data.success){
                 
                 const orderArray = data.data.map(item=>({
-                    id:item.id,
+                    id:item._id,
                     data:[item.user.curp, `${formatoNombre(item.user.nombre)} ${item.user.apellido_paterno.toUpperCase()} ${item.user.apellido_paterno.toUpperCase()}`,item.fecha_solicitud,item.association.nombre,item.status],
                     content:item
                 }))

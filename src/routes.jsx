@@ -118,7 +118,7 @@ const routes=[
    //FORMULARIOS
 
     {
-    path: "forms/usuarios/:id",
+    path: "forms/usuarios/:curp",
     name: "Reportes",
     icon: <FaChartLine  />,
     component: <FormUsers />,
@@ -176,7 +176,7 @@ const routes=[
     
     //VIEWS
     {
-        path: "view/patinadores/:id",
+        path: "view/patinadores/:curp",
         name: "Patinador",
         icon: <FaChartLine  />,
         component: <Patinador />,

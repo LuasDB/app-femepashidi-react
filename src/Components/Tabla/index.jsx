@@ -1,16 +1,48 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Label, Table,Input, FormGroup } from "reactstrap";
-import { FaPlusCircle, FaEdit, FaRegTrashAlt ,FaRegFolderOpen,FaEye  } from 'react-icons/fa';
+import { FaPlusCircle, FaEdit, FaRegTrashAlt ,FaRegFolderOpen,FaEye, FaTrash  } from 'react-icons/fa';
 import { MdDeleteForever } from "react-icons/md";
 import { Link } from "react-router-dom";
 import './styles.css'
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {server} from './../../db/server.js'
 import Swal from "sweetalert2";
 
 
 export function Tabla(props) {
     
     const { path,data,encabezados,title,collection } = props
+
+    const handleDelete = async(id)=>{
+      Swal.fire(
+        {
+          position: "center",
+          icon: "question",
+          title: "¿DESEAS ELIMINAR ESTE REGISTRO DE LA BASE DE DATOS?",
+          html:`Esto no podra revertirse`,
+          showConfirmButton: true,
+          showCancelButton:true,
+          confirmButtonText:'Si, claro',
+          cancelButtonText:'No, espera'
+        }
+      )
+      .then(async(result)=>{
+        if(result.isConfirmed){
+          try {
+            const { data } = await axios.delete(`${server}api/v1/${collection}/${id}`)
+            console.log(data)
+            
+            if(data.success){
+            Swal.fire('Elemento Eliminado',`Este registro fue eliminado de la base de datos`,'success')
+            }
+            return
+          } catch (error) {
+            Swal.fire('Algo salio mal',`No se pudo eliminar el registro. Código de error: ${error.message}`,'error')
+          }
+        }
+      })
+    
+    }
 
     return (
       <>
@@ -37,7 +69,6 @@ export function Tabla(props) {
                 {data?.map((item) => (
                   <tr key={item.id} className="border-b-2 border-stone-200 hover:bg-gray-100">
                     {item.data?.map((data2, index) => {
-                      console.log(data2)
                     return (
                       <td 
                       key={index} 
@@ -47,11 +78,13 @@ export function Tabla(props) {
                       </td>
                     )}
                     )}
-                    <td className="px-4 py-2 space-x-3">
+                    <td className=" w-32 px-4 py-2 space-x-2">
                       <Button className="bg-blue-400 text-white" size="sm" tag={Link} to={`${path}${item.id}`}>
                         <FaEdit />
                       </Button>
-                     
+                      <Button className="bg-red-400 text-white" size="sm" onClick={()=>handleDelete(item.id)}>
+                        <FaTrash />
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -66,7 +99,7 @@ export function Tabla(props) {
 
 export function TablaServicios(props) {
     
-    const { path,data,encabezados,title,collection } = props
+    const { path,data,encabezados,title,changeSearch} = props
 
     const [filtered, setFiltered] = useState(data || []);
     const [searchValue, setSearchValue] = useState('');
@@ -89,14 +122,9 @@ export function TablaServicios(props) {
 
     const handleChangeSearch = (e)=>{
         const world = e.target.value
-        setSearchValue(world)
-      
-        setFiltered(data.filter(item=>
-                item.data[0].toLowerCase().includes(world.toLowerCase()) || 
-                item.data[1].toLowerCase().includes(world.toLowerCase()) ))
-                
-       
+        changeSearch(world)
     }
+
     const stylesStatusBg = (status)=>{
       if(status === 'Servicio solicitado'){
         return 'bg-orange-200 border-2 border-red-300 text-center rounded-2 text-red-600'
@@ -161,6 +189,113 @@ export function TablaServicios(props) {
     );
 }
 
+export function TablaPatinadores(props) {
+  const {
+    path,
+    data,
+    encabezados,
+    title,
+    page = 1,
+    limit = 20,
+    total = 0,
+    onPageChange = () => {}
+  } = props
+
+  const [filtered, setFiltered] = useState(data || [])
+  const [isFirst, setIsFirst] = useState(true)
+
+  useEffect(() => {
+    if (isFirst && data) {
+      setFiltered(data)
+      setIsFirst(false)
+    }
+  }, [isFirst, data])
+
+  useEffect(() => {
+    if (data) {
+      setFiltered(data)
+    }
+  }, [data])
+
+   const stylesStatusBg = (status)=>{
+    if(status === 'Preinscrito'){
+      return 'bg-yellow-100 border-2 border-yellow-400 text-center rounded-2 text-yellow-500'
+    }
+    if(status === 'rechazado'){
+      return 'bg-red-100 border-2 border-red-400 text-center rounded-2 text-red-500'
+    }
+    if(status === 'aprobado'){
+      return 'bg-green-200 border-2 border-green-300 text-center rounded-2 text-green-700'
+    }}
+
+  const totalPages = Math.ceil(total / limit)
+
+  
+  return (
+    <>
+      <Card className="m-2 rounded-xl shadow mt-0 mb-2 ">
+        <CardHeader className="flex flex-col md:flex-row justify-between items-center border-0">
+          <Label className="text-curious-blue-950 font-bold text-center md:text-right">{title}</Label>
+        </CardHeader>
+        <CardBody>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr>
+                  {encabezados?.map((encabezado, index) => (
+                    <th key={`${index}-e`} className="px-1 py-2">{encabezado}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered?.map((item) => (
+                  <tr key={item._id} className="border-b-2 border-stone-200">
+                    {item.data?.map((data2, index) => (
+                      <td key={index} className="px-1 py-2 text-[12px]">
+                        <p className={`${(index === item.data.length - 1) ? `${stylesStatusBg(data2)}` : ''}`}>
+                          {data2}
+                        </p>
+                      </td>
+                    ))}
+                    <td className="px-4 py-2 space-x-3">
+                      <Button className="bg-curious-blue-500 hover:bg-curious-blue-600 text-white" size="sm" tag={Link} to={`${path}${item.curp}`}>
+                        <FaRegFolderOpen />
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* 🔽 Controles de paginación */}
+          <div className="flex justify-between items-center mt-4 text-sm">
+            <Button
+              variant="outline"
+              onClick={() => onPageChange(page - 1)}
+              disabled={page <= 1}
+            >
+              Anterior
+            </Button>
+
+            <span className="text-center">
+              Página <strong>{page}</strong> de <strong>{totalPages}</strong>
+            </span>
+
+            <Button
+              variant="outline"
+              onClick={() => onPageChange(page + 1)}
+              disabled={page >= totalPages}
+            >
+              Siguiente
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
+    </>
+  )
+}
+
 export function TablaInscripciones(props) {
     
   const { path,data,encabezados,title,collection,server,handleSelectedEvent,selectedEvent,isSelected } = props
@@ -173,8 +308,7 @@ export function TablaInscripciones(props) {
   useEffect(() => {
     const fetchEvents = async()=>{
       try {
-        const { data } =await axios.get(`${server}api/v1/managment/events`)
-        console.log('Data de tabla',`${server}api/v1/managment/events`)
+        const { data } =await axios.get(`${server}api/v1/events`)
         if(data.success){
           setEventsList(data.data)
         }else{
@@ -542,6 +676,8 @@ export function TablaExamenes(props) {
               item.data[0].toLowerCase().includes(world.toLowerCase()) || 
               item.data[1].toLowerCase().includes(world.toLowerCase()) ||
               item.data[2].toLowerCase().includes(world.toLowerCase())))
+
+
               
       
   }

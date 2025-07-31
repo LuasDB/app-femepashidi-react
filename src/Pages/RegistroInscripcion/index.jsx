@@ -68,16 +68,11 @@ export default function RegistroInscripcion(){
     const [isCategory,setIsCategory] = useState(false)
 
 
-
-
-    const navigate = useNavigate()
-    const location = useLocation()
-
-
     useEffect(()=>{
         const fetchEvents = async()=>{
             try {
-                const { data } = await axios.get(`${server}api/v1/managment/events`)
+                const { data } = await axios.get(`${server}api/v1/events`)
+                console.log(data)
                 if(data.success){
                     setEvents(data.data.filter(item=>item.status === 'Activo'))
                     
@@ -100,7 +95,7 @@ export default function RegistroInscripcion(){
         setCurp(upperCurp)
         
         try {
-            const { data } = await axios.get(`${server}api/v1/users/obtain/by/curp/one/user/${upperCurp}`)
+            const { data } = await axios.get(`${server}api/v1/skaters/${upperCurp}`)
             console.log('respuesta',data)
             if(data.success){
                 const verificacion = data?.data?.verificacion;
@@ -467,4 +462,7 @@ export default function RegistroInscripcion(){
             </div>
         </>
     )
+
+
+ 
 }

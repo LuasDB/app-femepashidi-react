@@ -23,7 +23,7 @@ const useFetchDataTables = ({collection,server})=>{
                     const dataOrder = ordenarPorItem(data.data,'status')
                     const orderArray = dataOrder
                     .map(item => ({
-                        id: item.id,
+                        id: item._id,
                         data: [item.nombre, formatoFecha(item.fecha_inicio), formatoFecha(item.fecha_fin), item.lugar,item.status],
                         content: item
                     }));
@@ -52,7 +52,7 @@ const useFetchDataTables = ({collection,server})=>{
 
 export default function Eventos(){
     const { data,error,loading } = useFetchDataTables({
-        collection:'managment/events',
+        collection:'events',
         server
     })
 
@@ -72,7 +72,6 @@ export default function Eventos(){
                 collection={'events'}
             />
             
-          
         </div>
     </>
         

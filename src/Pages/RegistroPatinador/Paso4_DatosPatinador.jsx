@@ -1,17 +1,7 @@
 import { useState } from "react";
 import { obtenerCategoria } from "../../Functions/funciones";
+import {listadoNiveles } from './../../Utils/lists.js'
 
-const listadoNiveles = [
-  "DEBUTANTES 1", "DEBUTANTES 1 ARTISTICO", "DEBUTANTES 1 ESPECIAL", "DEBUTANTES 2",
-  "DEBUTANTES 2 ARTISTICO", "DEBUTANTES 2 ESPECIAL", "PRE-BÁSICOS", "PRE-BÁSICOS ARTISTICO",
-  "PRE-BÁSICOS ESPECIAL", "BÁSICOS", "BÁSICOS ESPECIAL", "BÁSICOS ARTISTICO",
-  "PRE-PRELIMINAR", "PRE-PRELIMINAR ESPECIAL", "PRELIMINAR", "INTERMEDIOS 1",
-  "INTERMEDIOS 2", "NOVICIOS", "AVANZADOS 1", "AVANZADOS 2",
-  "ADULTO BRONCE ARTISTICO", "ADULTO PLATA ARTISTICO", "ADULTO ORO ARTISTICO",
-  "ADULTO MASTER ARTISTICO", "ADULTO MASTER ELITE ARTISTICO", "ADULTO PAREJAS ARTISTICO",
-  "ADULTO PAREJAS INTERMEDIATE ARTISTICO", "ADULTO PAREJAS MASTER ARTISTICO",
-  "ADULTO PAREJAS MASTER ELITE ARTISTICO"
-];
 
 
 const Paso4_DatosPatinador = ({ nextStep, prevStep, handleChange, values ,associations,setFormData}) => {
@@ -55,7 +45,7 @@ const Paso4_DatosPatinador = ({ nextStep, prevStep, handleChange, values ,associ
                 onChange={(e) => {
                   const selectedId = e.target.value;
                   console.log(selectedId)
-                  const selected = associations.find(a => a.id === selectedId);
+                  const selected = associations.find(a => a._id === selectedId);
                   console.log(selected)
                  setFormData(prev => ({
                   ...prev,
@@ -67,7 +57,7 @@ const Paso4_DatosPatinador = ({ nextStep, prevStep, handleChange, values ,associ
               >
                 <option value="">--Selecciona una opción--</option>
                 {associations?.map((item, index) => (
-                  <option value={item.id} key={`ASOC-${index}`}>{item.nombre}</option>
+                  <option value={item._id} key={`ASOC-${index}`}>{item.nombre}</option>
                 ))}
               </select> 
 

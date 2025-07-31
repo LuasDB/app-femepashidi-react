@@ -24,12 +24,12 @@ const useFetchDataTables = ({collection,server})=>{
                 const {data} = await axios.get(`${server}api/v1/${collection}`)
                 console.log(data)
                 if(data.success){
-                    const dataOrder = ordenarPorNombre(data.data)
-                    const orderArray = dataOrder
-                    .filter(item => item.status === 'Activo')  // Filtra los elementos que tienen el status 'Activo'
+                    // const dataOrder = ordenarPorNombre(data.data)
+                    const orderArray = data.data
+                    // .filter(item => item.status === 'Activo')  // Filtra los elementos que tienen el status 'Activo'
                     .map(item => ({
-                        id: item.id,
-                        data: [item.titulo, `${item.texto1} ${item.texto2} ${item.texto3} ${item.texto4} ${item.texto5} `],
+                        id: item._id,
+                        data: [item.titulo, `${item.texto1} ${item.texto2} ${item.texto3} ${item.texto4} ${item.texto5} `,item.status],
                         content: item
                     }));
                     setData(orderArray)
@@ -57,12 +57,11 @@ const useFetchDataTables = ({collection,server})=>{
 
 export default function Comunicados(){
     const { data,error,loading } = useFetchDataTables({
-        collection:'managment/communications',
+        collection:'announcements',
         server
     })
 
     
-   
     
     return (
     <>
@@ -71,10 +70,10 @@ export default function Comunicados(){
             <Tabla 
                 className='w-100'
                 path={'/gestion/forms/comunicados/'} 
-                encabezados={['TITULO','DESCRIPCION']}
+                encabezados={['TITULO','DESCRIPCION','STATUS']}
                 data={data}
                 title={'Comunicados'}
-                collection={'communications'}
+                collection={'announcements'}
             />
             
           

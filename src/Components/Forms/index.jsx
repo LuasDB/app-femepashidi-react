@@ -9,6 +9,7 @@ import Cotizador from './../Cotizador'
 
 import { server } from './../../db/server'
 import { ordenarPorNombre,formatoFolios,fechaHoraActual } from './../../Functions/funciones'
+import { listadoNiveles } from './../../Utils/lists.js'
 
 
 const useFormsFunction = ({id,endpoint,form,location,other})=>{
@@ -59,6 +60,7 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
 
         const { name, value,files,type } = e.target
         if (type === 'file') {
+            console.log(files)
             setFormData({
                 ...formData,
                 [name]: files
@@ -92,7 +94,6 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
         }
         
         
-        console.log('ESTEES EL CAMBIO',formData)
     }
     
     const handleSubmit = ()=>{
@@ -116,6 +117,7 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
                 empty[input]='empty'
             }else if(filteredFormData[input] instanceof FileList){
                 for (let i = 0; i < filteredFormData[input].length; i++) {
+
                     formulario.append(`${input}`, filteredFormData[input][i]);
                 }
             }
@@ -209,12 +211,8 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
                         for (let [clave, valor] of formulario.entries()) {
                             console.log(clave, valor);
                           }
-                    
-                    const { data } = await axios.patch(urlApi,formulario,{
-                        headers:{
-                            "Content-Type":"application/json"
-                        }
-                    })
+                
+                    const { data } = await axios.patch(urlApi,formulario)
                     
                     if(data.success){
                         Swal.fire(
@@ -240,16 +238,183 @@ const useFormsFunction = ({id,endpoint,form,location,other})=>{
     return {isNew,formError,handleChange,handleSubmit,formData}
 }
 
+const useFormsFunctionJson = ({id,endpoint,form,location,other})=>{
+
+    const navigator = useNavigate() 
+    const [isNew,setIsNew] = useState(false)
+    const [formData,setFormData] = useState({
+       
+    })
+    const [formError,setFormError] = useState({})
+
+    useEffect(()=>{
+       
+        const getResApi = async()=>{
+
+            try {
+                const {data} = await axios.get(`${server}api/v1/${endpoint}/${id}`)
+
+            if(data.success){
+                setFormData(data.data)
+                console.log(data.data)
+            }
+            } catch (error) {
+                console.log('[ERROR]',error)
+            }
+            
+
+        }
+
+        if(id === 'new'){
+            setIsNew(true)
+            setFormData(form)
+        }else{
+            getResApi()
+        }
+    },[id])
+    useEffect(()=>{
+
+        console.log('DATA:',formData)
+        console.log('ERROR',formError)
+
+    },[formData])
+
+    const handleChange = (e)=>{
+        e.preventDefault()
+
+        const { name, value,files,type } = e.target
+        if (type === 'file') {
+            setFormData({
+                ...formData,
+                [name]: files
+            });
+        }else{
+            if(isNew){
+                setFormData({
+                    ...formData,
+                    ['status']:'Activo',
+                    [name]:value
+                })
+                setFormError(
+                    {
+                        ...formError,
+                        ['status']:'',
+                        [name]:''
+                    }
+                )            
+            }else{
+                setFormData({
+                    ...formData,
+                    [name]:value
+                })
+                setFormError(
+                    {
+                        ...formError,
+                        [name]:''
+                    }
+                )
+            }
+        }
+        
+        
+    }
+    
+    const handleSubmit = ()=>{
+        console.log('EL FORMULARIO', formData)
+        
+        if(isNew){
+            Swal.fire({
+                position: "center",
+                icon: "question",
+                title: "ALTA EN BASE DE DATOS",
+                html:`¿Revisate que la información sea correcta?`,
+                showConfirmButton: true,
+                showCancelButton:true,
+                confirmButtonText:'Si, claro',
+                cancelButtonText:'No, espera'
+            }).then(async(result)=>{
+                if(result.isConfirmed){
+                    let urlApi =''
+                    if(endpoint === 'auth/users'){
+                        urlApi=`${server}api/v1/auth/register`
+                    }else{
+                        urlApi=`${server}api/v1/${endpoint}`
+                        console.log(urlApi)
+                    }
+                    const { data } = await axios.post(urlApi,formData)
+                    console.log('[ESTA ES LA RESPUESTA]',data)
+                    
+                    if(data.success){
+                        Swal.fire(
+                            {
+                                position: "center",
+                                icon: "success",
+                                title: "Se creo correctamente",
+                                html:`${data.message}`,
+                                showConfirmButton: true,
+                                // timer: 1500
+                            }
+                            ).then(result=>{
+                                if(result.isConfirmed){
+                                    navigator(location)
+                                }
+                            })
+                    }else{
+                        Swal.fire(`${res.message}`,'','error')
+                    }
+                }
+            })
+           
+        }else{
+            
+            Swal.fire({
+                position: "center",
+                icon: "question",
+                title: "ACTUALIZACIÓN EN BASE DE DATOS",
+                html:`¿Revisate que la información sea correcta?`,
+                showConfirmButton: true,
+                showCancelButton:true,
+                confirmButtonText:'Si, claro',
+                cancelButtonText:'No, espera'
+            }).then(async(result)=>{
+                if(result.isConfirmed){
+                    const urlApi=`${server}api/v1/${endpoint}/${id}`                    
+                    const { data } = await axios.patch(urlApi,formData)
+                    
+                    if(data.success){
+                        Swal.fire(
+                            {
+                            position: "center",
+                            icon: "success",
+                            title: "Se creo correctamente",
+                            html:`${data.message}`,
+                            showConfirmButton: true,
+                            // timer: 1500
+                        }
+                            ).then(result=>{
+                                if(result.isConfirmed){
+                                    navigator(location)
+                                }
+                            })
+                    }
+                }
+            })
+        }
+    }
+
+    return {isNew,formError,handleChange,handleSubmit,formData}
+}
+
 export function FormUsers(){
    
     
-    const { id } = useParams()
+    const { curp } = useParams()
     
     const location = '/gestion/patinadores'
 
-    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
-        id,
-        endpoint:'users',
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunctionJson({
+        id:curp,
+        endpoint:'skaters',
         form:{
             curp:'',
             nombre:'',
@@ -271,7 +436,7 @@ export function FormUsers(){
     useEffect(()=>{
         const getAsociaciones = async()=>{
             try {
-                const { data } = await axios.get(`${server}api/v1/managment/associations`)
+                const { data } = await axios.get(`${server}api/v1/associations`)
                 if(data.success){
                     setAsociaciones(data.data)
                 }
@@ -306,7 +471,6 @@ export function FormUsers(){
                                 <Input type="text" name="nombre" id="nombre" placeholder="" onChange={handleChange} className={`${formError.nombre === 'empty' ? 'border-red-600' : ''} `} value={formData.nombre}/>
                             </FormGroup>
                         </Col>
-                       
                         <Col md={4}>
                             <FormGroup>
                                 <Label for="apellido_paterno" >Apellido Paterno </Label>
@@ -393,35 +557,9 @@ export function FormUsers(){
                                 <Label for="nivel_actual" >Nivel actual </Label>
                                 <Input type="select" name="nivel_actual" id="nivel_actual" placeholder="" onChange={handleChange} className={`${formError.nivel_actual === 'empty' ? 'border-red-600' : ''} `} value={formData.nivel_actual}>
                                     <option value=''>--Selecciona--</option>
-                                    <option value="Danza">Danza</option>
-                                    <option value="Debutantes 1">Debutantes 1</option>
-                                    <option value="Debutantes 1 Artistic">Debutantes 1 Artistic</option>
-                                    <option value="Debutantes 1 Especial">Debutantes 1 Especial</option>
-                                    <option value="Debutantes 2">Debutantes 2</option>
-                                    <option value="Debutantes 2 Artistic">Debutantes 2 Artistic</option>
-                                    <option value="Debutantes 2 Especial">Debutantes 2 Especial</option>
-                                    <option value="Pre-Básicos">Pre-Básicos</option>
-                                    <option value="Pre-Básicos Artistic">Pre-Básicos Artistic</option>
-                                    <option value="Pre-Básicos Especial">Pre-Básicos Especial</option>
-                                    <option value="Básicos">Básicos</option>
-                                    <option value="Básicos Especial">Básicos Especial</option>
-                                    <option value="Básicos Artistic">Básicos Artistic</option>
-                                    <option value="Pre-preliminar">Pre-preliminar</option>
-                                    <option value="Preliminar">Preliminar</option>
-                                    <option value="Intermedios 1">Intermedios 1</option>
-                                    <option value="Intermedios 2">Intermedios 2</option>
-                                    <option value="Novicios">Novicios</option>
-                                    <option value="Avanzados 1">Avanzados 1</option>
-                                    <option value="Avanzados 2">Avanzados 2</option>
-                                    <option value="Adulto Bronce">Adulto Bronce</option>
-                                    <option value="Adulto Plata">Adulto Plata</option>
-                                    <option value="Adulto Oro">Adulto Oro</option>
-                                    <option value="Adulto Master">Adulto Master</option>
-                                    <option value="Adulto Master Elite">Adulto Master Elite</option>
-                                    <option value="ADULTO PAREJAS">ADULTO PAREJAS</option>
-                                    <option value="ADULTO PAREJAS INTERMEDIATE">ADULTO PAREJAS INTERMEDIATE</option>
-                                    <option value="ADULTO PAREJAS MASTER">ADULTO PAREJAS MASTER</option>
-                                    <option value="ADULTO PAREJAS MASTER ELITE">ADULTO PAREJAS MASTER ELITE</option>
+                                    {listadoNiveles?.map((nivel,index)=>(
+                                        <option value={nivel} key={`${index}--lev`}>{nivel}</option>
+                                    ))}
                                     
                                 </Input>
                             </FormGroup>
@@ -435,7 +573,7 @@ export function FormUsers(){
                                 <Input type="select" name="id_asociacion" id="id_asociacion" placeholder="" onChange={handleChange} className={`${formError.id_asociacion === 'empty' ? 'border-red-600' : ''} `} value={formData.id_asociacion}>
                                     <option value={''} >--Selecciona Asociacion--</option>
                                     {asociaciones?.map((item,index)=>(
-                                    <option key={`${index}-assoc`} value={item.id}>{item.nombre}</option>
+                                    <option key={`${index}-assoc`} value={item._id}>{item.nombre}</option>
 
                                     ))}
                                 </Input>
@@ -490,12 +628,14 @@ export function FormUsers(){
 //Revisado
 export function FormaAssociations(){
     
+    
     const { id } = useParams()
     const location = '/gestion/asociaciones'
 
-    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunctionJson({
         id,
-        endpoint:'managment/associations',
+        endpoint:'associations',
         form:{
             nombre:'',
             representante:'',
@@ -581,15 +721,15 @@ export function FormEvents(){
     const location = '/gestion/eventos'
    
 
-    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunctionJson({
         id,
-        endpoint:'managment/events',
+        endpoint:'events',
         form:{
             nombre:'',
             lugar:'',
             fecha_inicio:'',
             fecha_fin:'',
-            texto:'',
+            descripcion:'',
             tipo_competencia:'',
             status:'Activo'
         },
@@ -638,8 +778,8 @@ export function FormEvents(){
                     <Row>      
                         <Col md={6}>
                             <FormGroup>
-                                <Label for="texto" >Descripcion</Label>
-                                <Input type="text" name="texto" id="texto" placeholder="" onChange={handleChange} className={`${formError.texto === 'empty' ? 'border-red-600' : ''}`} value={formData.texto
+                                <Label for="descripcion" >Descripcion</Label>
+                                <Input type="text" name="descripcion" id="descripcion" placeholder="" onChange={handleChange} className={`${formError.descripcion === 'empty' ? 'border-red-600' : ''}`} value={formData.descripcion
                                 }/>
                             </FormGroup>
                         </Col>
@@ -690,7 +830,7 @@ export function FormCommunications(){
 
     const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
         id,
-        endpoint:'managment/communications',
+        endpoint:'announcements',
         form:{
             titulo:'',
             texto1:'',
@@ -709,8 +849,8 @@ export function FormCommunications(){
 
     const handleImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
-          const file = event.target.files[0];
-          setSelectedImage(URL.createObjectURL(file));
+        const file = event.target.files[0];
+        setSelectedImage(URL.createObjectURL(file));
         }
         handleChange(event)
       };
@@ -819,7 +959,7 @@ export function FormRegister(){
     const { id } = useParams()
     const location = '/gestion/inscripciones'
 
-    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
+    const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunctionJson({
         id,
         endpoint:'register',
         form:{
@@ -861,7 +1001,7 @@ export function FormRegister(){
                             <FormGroup>
                                 <Label for="status" >Estatus</Label>
                                 <Input type="select" name="status" id="status" onChange={handleChange} className={`${formError.status ? 'border-red-600' : ''}`} value={formData.status}>
-                                    <option value={'Preincrito'}>Preincrito</option>
+                                    <option value={'Preinscrito'}>Preinscrito</option>
                                     <option value={'aprobado'}>Aprobado</option>
                                     <option value={'rechazado'}>Rechazado</option>
                                 </Input>

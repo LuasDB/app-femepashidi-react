@@ -28,7 +28,7 @@ const useFetchDataTables = ({collection,server})=>{
                     const orderArray = dataOrder
                     .filter(item => item.status === 'Activo')  // Filtra los elementos que tienen el status 'Activo'
                     .map(item => ({
-                        id: item.id,
+                        id: item._id,
                         data: [item.nombre, item.abreviacion, item.representante, item.correo],
                         content: item
                     }));
@@ -57,7 +57,7 @@ const useFetchDataTables = ({collection,server})=>{
 
 export default function Asociaciones(){
     const { data,error,loading } = useFetchDataTables({
-        collection:'managment/associations',
+        collection:'associations',
         server
     })
 

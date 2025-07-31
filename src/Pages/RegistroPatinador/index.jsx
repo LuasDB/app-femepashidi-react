@@ -87,6 +87,7 @@ const obtenerDatosDesdeCurp=(curp)=>{
 const RegistroPatinador = () => {
     const [step, setStep] = useState(1);
     const [associations,setAssociations]= useState(null)
+    const [loading,setLoading] = useState(false)
     const [formData, setFormData] = useState({
         curp: '',
         nombre: '',
@@ -110,7 +111,7 @@ const RegistroPatinador = () => {
         const getAssociations = async()=>{
             try {
                 const {data } = await axios.get(`${server}api/v1/associations`)
-                setAssociations(data.documents)
+                setAssociations(data.data)
 
             } catch (error) {
                 Swal.fire('Algo Salio Mal',`No fueposible comunicarse con el servidor,por favor, intenta más tarde: [${error}]`, error)
@@ -151,30 +152,35 @@ const RegistroPatinador = () => {
   const handleSubmit = async()=>{
     console.log('Datos a enviar', formData)
      try {
+        setLoading(true)
 
-        const validate = await axios.get(`${server}api/v1/users/validate/${formData.curp}`)
-
+        const validate = await axios.get(`${server}api/v1/skaters/by-curp/${formData.curp}`)
+        console.log(validate.data)
         if(validate.data.success){
-            console.log(validate)
+            
             Swal.fire('Error','Este usuario ya se encuentra registrado', 'error')
             return
         }
     const form = new FormData();
 
     // Añadir todos los campos excepto la imagen
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== 'foto') {
-        form.append(key, value);
-      }
-    });
+        Object.entries(formData).forEach(([key, value]) => {
+        if (key !== 'foto' && key !=='asociacion') {
+            form.append(key, value);
+        }
+        });
 
     // Añadir la imagen si existe
     if (formData.foto) {
       form.append('img', formData.foto);
     }
+    if(formData.asociacion){
+        form.append('asociacion',JSON.stringify(formData.asociacion))
+    }
+
 
     // Hacer la petición POST
-    const {data} = await axios.post(`${server}api/v1/users`, form, {
+    const {data} = await axios.post(`${server}api/v1/skaters/new-skater/skaters`, form, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -182,13 +188,24 @@ const RegistroPatinador = () => {
 
     // Si fue exitoso
     console.log('Registro exitoso:', data);
-    Swal.fire('Registro creado',` Tu información se guardo correctamente, te enviamos un correo para confirmar tu registro`,'success')
+    Swal.fire('Registro creado',` Tu información se guardo correctamente, te enviamos un correo para confirmar tu registro`,'success').then(res=>{
+        if(res.isConfirmed){
 
+            window.location.replace("https://femepashidi.com.mx");
+        }else{
+             window.location.replace("https://femepashidi.com.mx");
+        }
+    })
+   
 
   } catch (error) {
     console.error('Error al registrar patinador:', error);
     alert('Ocurrió un error al enviar el formulario.');
+  }finally{
+        setLoading(false)
+
   }
+
 
   }
 
@@ -238,6 +255,7 @@ const RegistroPatinador = () => {
                 values={formData}
                 associations={associations}
                 handleSubmit={handleSubmit}
+                loading={loading}
             />
         )
             

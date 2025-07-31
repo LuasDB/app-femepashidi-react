@@ -16,6 +16,8 @@ import Resultados from '../Pages/Resultados'
 import ResultadosPasados from '../Pages/ResultadosPasados'
 import ExceltToXml from '../Components/ExcelToXml'
 import RegistroPatinador from '../Pages/RegistroPatinador'
+import Inscripcion from '../Pages/Inscripcion'
+import FileUploader from '../Pages/FileUploader'
 
 
 
@@ -55,6 +57,8 @@ function App() {
           <Route path="/examen-admin/:year/:id/" element={<ExamenAdmin />} />
           <Route path="/examen-judge/:year/:id/" element={<ExamenJueces />} />
           <Route path="/registro/" element={<RegistroPatinador />} />
+          <Route path="/ins/" element={<Inscripcion />} />
+          <Route path="/uploadfiles/" element={<FileUploader />} />
         </Routes>
       </Router>
     </AuthProvider>

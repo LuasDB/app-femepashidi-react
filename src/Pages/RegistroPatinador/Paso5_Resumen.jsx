@@ -1,5 +1,5 @@
 
-const Paso5_Resumen = ({ prevStep, handleSubmit, values ,associations}) => {
+const Paso5_Resumen = ({ prevStep, handleSubmit, values ,associations,loading}) => {
   const backStep = e => {
     e.preventDefault();
     prevStep();
@@ -66,10 +66,14 @@ const Paso5_Resumen = ({ prevStep, handleSubmit, values ,associations}) => {
           Anterior
         </button>
         <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded focus:outline-none focus:shadow-outline w-auto text-lg"
+          className={`${loading ?'bg-gray-500 hover:bg-gray-700':'bg-green-500 hover:bg-green-700'} text-white font-bold py-3 px-6 rounded focus:outline-none focus:shadow-outline w-auto text-lg`}
           onClick={handleSubmit}
+          disabled={loading}
         >
-          Confirmar y Registrar
+          {loading?
+          (<p>Enviando...</p> )
+          :(<p>Confirmar y Registrar</p>)}
+          
         </button>
       </div>
     </div>
