@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
                 Swal.fire('Credenciales Invalidas','Intente de nuevo','error')
             }
         } catch (error) {
-           console.log(error)
+           return
           
         }
     };
