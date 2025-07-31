@@ -36,7 +36,7 @@ function App() {
 
   return (
     <AuthProvider >
-      <Router basename='/inicio/femepashidi/'>
+      <Router basename='/'>
         <Routes>
           <Route path="/gestion" 
           element={
