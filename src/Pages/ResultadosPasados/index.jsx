@@ -12,7 +12,7 @@ export default function Resultados(){
     useEffect(()=>{
         const fetchData = async()=>{
             try {
-                const { data } =await axios.get(`${server}api/v1/managment/results`)
+                const { data } =await axios.get(`${server}api/v1/results`)
                 if(data.success){
                     setData(data.data)
                 }

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Row, Col, Card, CardBody, CardFooter, Button } from 'reactstrap'
 import Swal from 'sweetalert2'
-import { server } from './../../db/server'
+import { server,urlApp } from './../../db/server'
 import './styles.css'
 import { Link } from 'react-router-dom'
 
@@ -13,7 +13,7 @@ export default function Resultados(){
     useEffect(()=>{
         const fetchData = async()=>{
             try {
-                const { data } =await axios.get(`${server}api/v1/managment/results`)
+                const { data } =await axios.get(`${server}api/v1/results`)
                 if(data.success){
                     setData(data.data)
                 }
@@ -62,7 +62,7 @@ export default function Resultados(){
                         onClick={() => window.open(`https://femepashidi.com.mx/${item.carpeta}`)}>
                         
                         <CardBody>
-                            <img src={`${server}images/results/${item.img}`} alt="Logo Evento" className="w-full" />
+                            <img src={`${server}${item.img}`} alt="Logo Evento" className="w-full" />
                         </CardBody>
 
                         <CardFooter className="flex items-center justify-center">
@@ -76,7 +76,7 @@ export default function Resultados(){
 
                 <div className="flex items-center justify-center p-10">
                 <Button className='bg-blue-500 hover:bg-blue-600 '
-                onClick={()=>window.open(`https://femepashidi.com.mx/inicio/femepashidi/resultados-anteriores`)}> Resultados anteriores</Button>
+                onClick={()=>window.open(`${urlApp}resultados-anteriores`)}> Resultados anteriores</Button>
                 </div>
 
         </div>
