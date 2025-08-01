@@ -35,7 +35,7 @@ export default function NavBar() {
                 <FaUser className='flex cursor-pointer'/>
               </DropdownToggle>
               <DropdownMenu >
-                <DropdownItem className='hover:bg-slate-400'>{user.user.nombre}</DropdownItem>
+                <DropdownItem className='hover:bg-slate-400'>{user.name}</DropdownItem>
                 <DropdownItem onClick={handleLogOut} className='hover:bg-slate-400'>Salir</DropdownItem>
               </DropdownMenu>
             </Dropdown>

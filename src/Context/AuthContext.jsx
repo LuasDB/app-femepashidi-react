@@ -18,11 +18,12 @@ const AuthProvider = ({ children }) => {
             const { data } = await axios.post(`${server}api/v1/auth/login`, { email, password });
             console.log(data);
             if (data.success) {
-                const token = data.data.token;
+                const token = data.token;
                 localStorage.setItem('token', token);
                 const decoded = jwtDecode(token);
-                console.log(decoded);
+                console.log(decoded)
                 setUser(decoded);
+                return true
             } else {
                 setUser(null);
                 localStorage.removeItem('token');
