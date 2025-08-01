@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Camera } from 'lucide-react'; 
 import { Row, Col, Container,Card, Input,FormGroup,Label, Button, CardFooter,CardHeader,CardBody,Form
     , CardTitle} from "reactstrap"
@@ -31,13 +32,27 @@ const InscripcionCompetencia = () => {
 
     const [newFoto, setNewFoto] = useState(null);
     const [previewFoto, setPreviewFoto] = useState(null);
+    const navigator = useNavigate()
 
     const fetchEvents = async()=>{
             try {
                 const { data } = await axios.get(`${server}api/v1/events`)
-                console.log(data)
+                
                 if(data.success){
-                    setEvents(data.data.filter(item=>item.status === 'Activo'))
+                    const activeEvents = data.data.filter(item=>item.status === 'Activo')
+                    console.log(activeEvents)
+
+                    if(activeEvents.length === 0){
+                        Swal.fire('¡Aun no hay competencias!','Revisa nuestras fechas para poder inscribirte','info')
+                        .then(result=>{
+                            if(result.isConfirmed){
+                                window.location.href ='https://femepashidi.com.mx/inicio'
+                            }
+                        })
+                    }else{
+                    setEvents(activeEvents)
+
+                    }
                     
                 }
             } catch (error) {
