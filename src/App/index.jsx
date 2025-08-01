@@ -50,14 +50,13 @@ function App() {
           <Route path="/register" element={<h2>HOLA MUNDO</h2>} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/sol-password" element={<SolicitudPassword />} />
-          <Route path="/inscripcion" element={<RegistroInscripcion />} />
           <Route path="/streaming" element={<Streaming />} />
           <Route path="/resultados" element={<Resultados />} />
           <Route path="/resultados-anteriores" element={<ResultadosPasados />} />
           <Route path="/examen-admin/:year/:id/" element={<ExamenAdmin />} />
           <Route path="/examen-judge/:year/:id/" element={<ExamenJueces />} />
           <Route path="/registro/" element={<RegistroPatinador />} />
-          <Route path="/ins/" element={<Inscripcion />} />
+          <Route path="/inscripcion/" element={<Inscripcion />} />
           <Route path="/uploadfiles/" element={<FileUploader />} />
         </Routes>
       </Router>
