@@ -1029,7 +1029,7 @@ export function FormResults(){
 
     const {isNew,formError,handleChange,handleSubmit,formData} = useFormsFunction({
         id,
-        endpoint:'managment/results',
+        endpoint:'results',
         form:{
             titulo:'',
             img:null,

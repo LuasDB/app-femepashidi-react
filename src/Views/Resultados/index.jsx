@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 import {Tabla} from '../../Components/Tabla'
 
-// const server = 'http://localhost:3000/'
-
-
 import axios from 'axios';
 
 import { server } from '../../db/server'
@@ -28,7 +25,7 @@ const useFetchDataTables = ({collection,server})=>{
                     const orderArray = dataOrder
                     .filter(item => item.status === 'Activo')  // Filtra los elementos que tienen el status 'Activo'
                     .map(item => ({
-                        id: item.id,
+                        id: item._id,
                         data: [item.titulo, item.carpeta, item.condicion, item.status],
                         content: item
                     }));
@@ -57,7 +54,7 @@ const useFetchDataTables = ({collection,server})=>{
 
 export default function Resultados(){
     const { data,error,loading } = useFetchDataTables({
-        collection:'managment/results',
+        collection:'results',
         server
     })
 
