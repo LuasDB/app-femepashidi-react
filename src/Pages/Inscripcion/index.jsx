@@ -265,7 +265,7 @@ const InscripcionCompetencia = () => {
                                 </Button>
                                 </form>
                                 <a 
-                                href={`${import.meta.env.VITE_URL_APP}/registro`}
+                                href={`${import.meta.env.VITE_URL_APP}registro`}
                                 className={`
                                     mt-4
                                     p-2
