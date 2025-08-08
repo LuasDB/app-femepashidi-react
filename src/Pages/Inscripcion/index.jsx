@@ -70,7 +70,6 @@ const InscripcionCompetencia = () => {
             console.log('respuesta',data)
             if(data.success){
                 const verificacion = data?.data?.verificacion;
-                
                 if(verificacion !== true && verificacion !== 'true'){
                     Swal.fire('No puedes inscribirte aun!','Tu registro aun no ha sido autorizado, espera a que tu asociación verifique tu registro a nuestrta plataforma y una vez autorizado vuelve a intentarlo','warning').then(response=>{
                         if(response.isConfirmed){
@@ -213,8 +212,24 @@ const InscripcionCompetencia = () => {
                     setLoading(true)
                     const { data } = await axios.post(`${server}api/v1/register`,dataForm)
                     if(data.success){
-                        Swal.fire('Tu solicitud fue enviada 🎉','Te haremos llegar un correo cuando se acepte tu inscripción, te sugerimos estar pendiente.','success')
-                        
+                        console.log('respuesta',data)
+                        setFormData({})
+                        setDataToSend({})
+                        setIsRegister(false)
+                        setCurp('')
+                        setIsConfirmed(false)
+                        setNewFoto(null)
+                        setPreviewFoto(null)
+                        setSelectedCompetitionType('')
+                        setOriginalLevel(null)
+                        setisAdult(false)
+                        setIsCategory(false)
+                        setFormError({})
+                        Swal.fire('Tu solicitud fue enviada 🎉','Te haremos llegar un correo cuando se acepte tu inscripción, te sugerimos estar pendiente.','success').then((result)=>{
+                            if(result.isConfirmed){
+                                window.location.href = 'https://femepashidi.com.mx/inicio';
+                            }
+                        })
                     }
                 } catch (error) {
                     return
