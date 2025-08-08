@@ -265,7 +265,7 @@ const InscripcionCompetencia = () => {
                                 </Button>
                                 </form>
                                 <a 
-                                href="https://www.femepashidi.com.mx/inicio/registro/" 
+                                href={`${import.meta.env.VITE_URL_APP}/registro`}
                                 className={`
                                     mt-4
                                     p-2
