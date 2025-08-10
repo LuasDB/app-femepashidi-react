@@ -14,6 +14,7 @@ import Streaming from '../Pages/Streaming'
 import { routes } from './../routes'
 import Resultados from '../Pages/Resultados'
 import ResultadosPasados from '../Pages/ResultadosPasados'
+import CartasPermiso from '../Pages/CartasPermiso'
 import ExceltToXml from '../Components/ExcelToXml'
 import RegistroPatinador from '../Pages/RegistroPatinador'
 import Inscripcion from '../Pages/Inscripcion'
@@ -58,6 +59,7 @@ function App() {
           <Route path="/registro/" element={<RegistroPatinador />} />
           <Route path="/inscripcion/" element={<Inscripcion />} />
           <Route path="/uploadfiles/" element={<FileUploader />} />
+          <Route path="/cartas-permiso/" element={<CartasPermiso />} />
         </Routes>
       </Router>
     </AuthProvider>
