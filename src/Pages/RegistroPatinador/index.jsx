@@ -103,6 +103,7 @@ const RegistroPatinador = () => {
         nivel_actual: '',
         categoria: '',
         foto: null,
+        createAt:new Date().toISOString()
     });
 
     useEffect(()=>{
@@ -163,7 +164,7 @@ const RegistroPatinador = () => {
         }
     const form = new FormData();
 
-    // Añadir todos los campos excepto la imagen
+    
         Object.entries(formData).forEach(([key, value]) => {
         if (key !== 'foto' && key !=='asociacion') {
             form.append(key, value);

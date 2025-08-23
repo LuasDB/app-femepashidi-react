@@ -11,7 +11,7 @@ const PhotoGallery = () => {
   const [filesList,setFilesList] = useState([])
   const [titulo,setTitulo] = useState('')
 
-  // Función para manejar la selección de una nueva foto
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     setFilesList([...filesList, file])
@@ -31,23 +31,18 @@ const PhotoGallery = () => {
     
   };
 
-  // Función para agregar la nueva foto a la galería
-  
-
-  // Función para eliminar una foto de la galería
   const removePhoto = (index) => {
     setPhotos(photos.filter((_, i) => i !== index));
 
     setFilesList(filesList.filter((_,i) => i !== index))
   };
 
-  //Funcion para subir a base de datos la nueva galeria
-
   const hanldeUpdateGallery = async()=>{
 
 
     if(photos.length === 0 || titulo === ''){
       Swal.fire('Antención', 'Es necesario que coloques el titulo y subas por lo menos una imagen para poder actualizar tu galeria','warning')
+      return
     }
 
     try {
@@ -58,10 +53,8 @@ const PhotoGallery = () => {
         formData.append(`foto_${index}`,file)
       })
 
-      console.log(`${server}api/v1/gallery/gallery/6fzcCXDa5AZ3w13m5T9e`)
-     
 
-      const { data } = await axios.patch(`${server}api/v1/gallery/gallery/6fzcCXDa5AZ3w13m5T9e`,formData)
+      const { data } = await axios.post(`${server}api/v1/gallery`,formData)
       if(data.success){
 
       Swal.fire('Galeria actualizada', 'La galeria se actualizó correctamente','success')
@@ -93,7 +86,7 @@ const PhotoGallery = () => {
           </Card>
         </Col>
 
-        {/* Mostrar fotos subidas */}
+     
         {photos.map((photo, index) => (
           <Col md="3" key={index}>
             <Card className='relative'>
