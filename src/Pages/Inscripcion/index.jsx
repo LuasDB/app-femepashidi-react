@@ -5,7 +5,7 @@ import { Row, Col, Container,Card, Input,FormGroup,Label, Button, CardFooter,Car
     , CardTitle} from "reactstrap"
 import './styles.css';
 import axios from "axios"
-import { server } from "../../db/server"
+import { server,urlApp } from "../../db/server"
 import Swal from "sweetalert2"
 import {obtenerCategoria} from "../../Functions/funciones.js"
 import { competitionLevels,categoriesByCompetition } from "./../../Utils/lists.js"
@@ -19,6 +19,7 @@ const InscripcionCompetencia = () => {
 
     })
     const [originalLevel,setOriginalLevel]=useState(null)
+    const [firstLevel,setFirstLevel] = useState(null)
     const [events,setEvents] = useState({})
     const [formError,setFormError] = useState({
 
@@ -81,6 +82,8 @@ const InscripcionCompetencia = () => {
                 if(data.data.nivel_actual.toLowerCase().includes('adulto')){
                     setisAdult(true)
                 }
+                setFirstLevel(data.data.nivel_actual.toLowerCase())
+                
                 
                 setIsRegister(true)
                 const user = {
@@ -183,6 +186,7 @@ const InscripcionCompetencia = () => {
         dataForm.append('association',JSON.stringify(formData.asociacion))
         dataForm.append('user',JSON.stringify(formData))
         dataForm.append('status','Preinscrito')
+        dataForm.append('firstLevel',firstLevel)
         dataForm.append('fecha_solicitud',new Date().toISOString().split('T')[0])
         dataForm.append('categoria',formData.categoria)
         if(selectedCompetitionType === '⁠Internacional ISU'){
@@ -213,7 +217,6 @@ const InscripcionCompetencia = () => {
                     setLoading(true)
                     const { data } = await axios.post(`${server}api/v1/register`,dataForm)
                     if(data.success){
-                        console.log('respuesta',data)
                         setFormData({})
                         setDataToSend({})
                         setIsRegister(false)
@@ -226,6 +229,7 @@ const InscripcionCompetencia = () => {
                         setisAdult(false)
                         setIsCategory(false)
                         setFormError({})
+                        setFirstLevel(null)
                         Swal.fire('Tu solicitud fue enviada 🎉','Te haremos llegar un correo cuando se acepte tu inscripción, te sugerimos estar pendiente.','success').then((result)=>{
                             if(result.isConfirmed){
                                 window.location.href = 'https://femepashidi.com.mx/inicio';
@@ -233,7 +237,12 @@ const InscripcionCompetencia = () => {
                         })
                     }
                 } catch (error) {
-                    return
+                    console.error(error)
+                   Swal.fire('Algo paso!',error.response.data.message,'warning').then((result)=>{
+                            if(result.isConfirmed){
+                                window.location.href = `${urlApp}inscripcion`;
+                            }
+                        })
                 }finally{setLoading(false)}
             }})
         
