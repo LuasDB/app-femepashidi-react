@@ -78,11 +78,14 @@ const InscripcionCompetencia = () => {
                     })
                     
                 }
+                if(data.data.nivel_actual.toLowerCase().includes('adulto')){
+                    setisAdult(true)
+                }
                 
                 setIsRegister(true)
                 const user = {
                     ...data.data,
-                    categoria: obtenerCategoria(data.data.fecha_nacimiento, data.data.nivel_actual)
+                    categoria: obtenerCategoria(data.data.fecha_nacimiento, data.data.nivel_actual,data.data.nivel_actual.toLowerCase().includes('adulto'))
                 }
                 
                 setFormData(user)
@@ -99,9 +102,7 @@ const InscripcionCompetencia = () => {
                     nivel_actual:data.data.nivel_actual
                 })
                 console.log('ES ADULTO?',data.data.nivel_actual.toLowerCase())
-                if(data.data.nivel_actual.toLowerCase().includes('adulto')){
-                    setisAdult(true)
-                }
+                
             }
 
         } catch (error) {
@@ -351,8 +352,19 @@ const InscripcionCompetencia = () => {
                                         <Label for="nivel_actual" >Nivel actual </Label>
                                         <Input type="select" name="nivel_actual" id="nivel_actual" placeholder="" onChange={handleChange} className={`${formError.nivel_actual === 'empty' ? 'border-red-600' : ''} `}  >
                                             {selectedCompetitionType === 'Nacional' ? 
-                                                (
-                                                    <option value={formData.nivel_actual}>{formData.nivel_actual}</option>
+                                                ( <>
+                                                    {isAdult ? 
+                                                    (<>
+                                                        <option value="">--Selecciona el nivel--</option>
+                                                    {getFilteredLevels().map((level)=>(
+                                                        <option key={`${level}-levels`} value={level}>
+                                                        {level}
+                                                        </option>
+                                                    ))}
+                                                    </>) 
+                                                    : (<option value={formData.nivel_actual}>{formData.nivel_actual}</option>)}
+                                                    </>
+                                                    
                                                 )
                                                 :(<>
                                                     <option value="">--Selecciona el nivel--</option>
@@ -375,10 +387,8 @@ const InscripcionCompetencia = () => {
                                         <Label for="categoria" >Categoria </Label>
                                         <Input type="select" required name="categoria" id="categoria" placeholder="" onChange={handleChange} className={`${formError.categoria === 'empty' ? 'border-red-600' : ''} `} >
                                         {selectedCompetitionType === 'Nacional' ? 
-                                                (
-                                                    <option value={formData.categoria}>{formData.categoria}</option>
-                                                )
-                                                :(<>
+                                        ( <option value={formData.categoria}>{formData.categoria}</option>)  
+                                        :(<>
                                                     <option value="">--Selecciona una categoria--</option>
                                                     {getFilteredCategories().map((category)=>(
                                                         <option key={`${category}-category`} value={category}>

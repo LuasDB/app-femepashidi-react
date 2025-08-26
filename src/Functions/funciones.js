@@ -380,7 +380,8 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   return etiqueta || 'Nivel o género no válido';
 }
 
-function obtenerCategoria(fechaNacimiento, nivel) {
+function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
+  console.log('Es adulto???',isAdult)
   const fecha = new Date(fechaNacimiento);
   const cutoffDate = new Date('2025-07-01');
 
@@ -390,7 +391,7 @@ function obtenerCategoria(fechaNacimiento, nivel) {
 
   const time = fecha.getTime();
 
-  // Convertimos los rangos a timestamps para comparar más fácilmente
+  // Rangos normales (no adultos)
   const rangos = {
     'PRE-INFANTIL': [
       new Date('2021-07-01').getTime(),
@@ -418,34 +419,73 @@ function obtenerCategoria(fechaNacimiento, nivel) {
     ]
   };
 
-  if (nivel === 'NOVICIOS') {
-    if (edadAlCorte >= 10 && edadAlCorte < 16) {
-      return 'NOVICIOS (ADVANCED NOVICE) ISU';
-    }
-  } else if (nivel === 'AVANZADOS 1') {
-    if (edadAlCorte >= 13 && edadAlCorte < 19) {
-      return 'AVANZADOS 1 (JUNIOR) ISU';
-    }
-  } else if (nivel === 'AVANZADOS 2') {
-    if (edadAlCorte >= 17) {
-      return 'AVANZADOS 2 (SENIOR) ISU';
-    }
-  } else {
-    // Resto de niveles por fecha
-    for (const [categoria, [inicio, fin]] of Object.entries(rangos)) {
+  // Rangos adultos según documento
+  const rangosAdultos = {
+    'CLASS I': [
+      new Date('1987-07-01').getTime(),
+      new Date('1997-06-30').getTime()
+    ],
+    'CLASS II': [
+      new Date('1977-07-01').getTime(),
+      new Date('1987-06-30').getTime()
+    ],
+    'CLASS III': [
+      new Date('1967-07-01').getTime(),
+      new Date('1977-06-30').getTime()
+    ],
+    'CLASS IV': [
+      new Date('1957-07-01').getTime(),
+      new Date('1967-06-30').getTime()
+    ],
+    'CLASS V': [
+      0, // antes de 1957-06-30
+      new Date('1957-06-30').getTime()
+    ]
+  };
+
+  if (isAdult) {
+    // Competidor adulto → buscar en rangos adultos
+    for (const [categoria, [inicio, fin]] of Object.entries(rangosAdultos)) {
       if (time >= inicio && time <= fin) {
         return categoria;
       }
+      // Clase V: nacidos antes de 30 junio 1957
+      if (categoria === 'CLASS V' && time <= fin) {
+        return categoria;
+      }
     }
+  } else {
+    // Niveles ISU
+    if (nivel === 'NOVICIOS') {
+      if (edadAlCorte >= 10 && edadAlCorte < 16) {
+        return 'NOVICIOS (ADVANCED NOVICE) ISU';
+      }
+    } else if (nivel === 'AVANZADOS 1') {
+      if (edadAlCorte >= 13 && edadAlCorte < 19) {
+        return 'AVANZADOS 1 (JUNIOR) ISU';
+      }
+    } else if (nivel === 'AVANZADOS 2') {
+      if (edadAlCorte >= 17) {
+        return 'AVANZADOS 2 (SENIOR) ISU';
+      }
+    } else {
+      // Otras categorías juveniles
+      for (const [categoria, [inicio, fin]] of Object.entries(rangos)) {
+        if (time >= inicio && time <= fin) {
+          return categoria;
+        }
+      }
 
-    // Adulto: nacido antes del 1 de julio de 1997
-    if (time < new Date('1997-07-01').getTime()) {
-      return 'ADULTO';
+      // Si nació antes del 1 de julio 1997 y no es adulto → general
+      if (time < new Date('1997-07-01').getTime()) {
+        return 'ADULTO';
+      }
     }
   }
 
   return 'Sin categoría aplicable';
 }
+
 
 
 export { 
