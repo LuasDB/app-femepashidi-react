@@ -381,7 +381,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
 }
 
 function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
-  console.log('Es adulto???',isAdult)
+  
   const fecha = new Date(fechaNacimiento);
   const cutoffDate = new Date('2025-07-01');
 

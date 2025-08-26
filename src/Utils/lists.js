@@ -27,7 +27,12 @@ const competitionLevels = {
       "Pre-preliminar", "Pre-preliminar Especial", "Preliminar", "Intermedios 1",
       "Intermedios 2", "Novicios", "Avanzados 1", "Avanzados 2",
       "Adulto Bronce Artistico", "Adulto Plata Artistico", "Adulto Oro Artistico",
-      "Adulto Master Artistico", "Adulto Master Elite Artistico", "ADULTO PAREJAS Artistico",
+      "Adulto Master Artistico", "Adulto Master Elite Artistico", 
+
+      "Adulto Bronce", "Adulto Plata", "Adulto Oro",
+      "Adulto Master", "Adulto Master Elite",
+      
+      "ADULTO PAREJAS Artistico",
       "ADULTO PAREJAS INTERMEDIATE Artistico", "ADULTO PAREJAS MASTER Artistico",
       "ADULTO PAREJAS MASTER ELITE Artistico"
     ],
