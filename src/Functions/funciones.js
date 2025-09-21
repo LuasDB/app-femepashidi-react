@@ -146,187 +146,159 @@ function formatoDosDigitos(numero) {
 }
 
 function obtenerEtiqueta(nivel, genero, categoria = "") {
-  
-  
+  // Normalizamos entradas
+  const nivelKey = nivel.trim().toUpperCase();
+  const generoKey = genero.trim().toLowerCase();
+  const categoriaKey = categoria.trim().toUpperCase();
 
   // Etiquetas de niveles sin categoría
   const etiquetasFemeniles = {
-      'Avanzados 2': 'FSKWSINGLES-----------------------',
-      'Avanzados 1': 'FSKWSINGLES-JUNIOR----------------',
+      'AVANZADOS 2': 'FSKWSINGLES-----------------------',
+      'AVANZADOS 1': 'FSKWSINGLES-JUNIOR----------------',
       'ADVANCED NOVICE':'FSKWSINGLES-ADVNOV----------------',
-      'Novice':'FSKWSINGLES-ADVNOV----------------',
-      'Novicios': 'FSKWSINGLES-ADVNOV----------------',
+      'NOVICE':'FSKWSINGLES-ADVNOV----------------',
+      'NOVICIOS': 'FSKWSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKWSINGLES-JUNIOR----------------',
       'SENIOR':'FSKWSINGLES-SENIOR----------------',
-      'Junior':'FSKWSINGLES-JUNIOR----------------',
-      'Senior':'FSKWSINGLES-SENIOR----------------',
   };
   
   const etiquetasVaroniles = {
-      'Avanzados 2': 'FSKMSINGLES-----------------------',
-      'Avanzados 1': 'FSKMSINGLES-JUNIOR----------------',
-      'Novicios': 'FSKMSINGLES-ADVNOV----------------',
+      'AVANZADOS 2': 'FSKMSINGLES-----------------------',
+      'AVANZADOS 1': 'FSKMSINGLES-JUNIOR----------------',
+      'NOVICIOS': 'FSKMSINGLES-ADVNOV----------------',
       'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
-      'Novice':'FSKMSINGLES-ADVNOV----------------',
+      'NOVICE':'FSKMSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
       'SENIOR':'FSKMSINGLES-SENIOR----------------',
-      'Junior':'FSKMSINGLES-JUNIOR----------------',
-      'Senior':'FSKMSINGLES-SENIOR----------------',
   };
 
-  // Etiquetas de niveles con categoría
+  // Etiquetas de niveles con categoría (ejemplo reducido, pero con mayúsculas)
   const etiquetasFemenilesCat = {
-      'Intermedios 2': 'FSKWSINGLES-IN2CAT----------------',
-      'Intermedios 1': 'FSKWSINGLES-IN1CAT----------------',
-      'Preliminar':'FSKWSINGLES-PRECAT----------------',
-      'Pre-preliminar':'FSKWSINGLES-PPRCAT----------------',
-      'Pre-preliminar Especial':'FSKWSINGLES-PPECAT----------------',
-      'Básicos':'FSKWSINGLES-BASCAT----------------',
-      'Básicos Especial':'FSKWSINGLES-BAECAT----------------',
-      'Basicos':'FSKWSINGLES-BASCAT----------------',
-      'Basicos Especial':'FSKWSINGLES-BAECAT----------------',
-      'Pre-Básicos':'FSKWSINGLES-PRBCAT----------------',
-      'Pre-Basicos':'FSKWSINGLES-PRBCAT----------------',
+      'INTERMEDIOS 2': 'FSKWSINGLES-IN2CAT----------------',
+      'INTERMEDIOS 1': 'FSKWSINGLES-IN1CAT----------------',
+      'PRELIMINAR':'FSKWSINGLES-PRECAT----------------',
+      'PRE-PRELIMINAR':'FSKWSINGLES-PPRCAT----------------',
+      'PRE-PRELIMINAR ESPECIAL':'FSKWSINGLES-PPECAT----------------',
+      'BÁSICOS':'FSKWSINGLES-BASCAT----------------',
+      'BÁSICOS ESPECIAL':'FSKWSINGLES-BAECAT----------------',
+      'BASICOS':'FSKWSINGLES-BASCAT----------------',
+      'BASICOS ESPECIAL':'FSKWSINGLES-BAECAT----------------',
+      'PRE-BÁSICOS':'FSKWSINGLES-PRBCAT----------------',
+      'PRE-BASICOS':'FSKWSINGLES-PRBCAT----------------',
       'PRE BÁSICOS':'FSKWSINGLES-PRBCAT----------------',
-      'Pre-Básicos Especial':'FSKWSINGLES-PRECAT----------------',
-      'Debutantes 2':'FSKWSINGLES-DE2CAT----------------',
-      'Debutantes 2 Especial':'FSKWSINGLES-D2ECAT----------------',
-      'Debutantes 1':'FSKWSINGLES-DE1CAT----------------',
-      'Adulto Bronce':'FSKWSINGLES-BRTCAT----------------',
-      'Adulto Plata':'FSKWSINGLES-SITCAT----------------',
-      'Adulto Oro':'FSKWSINGLES-GOTCAT----------------',
-      'Adulto Master':'FSKWSINGLES-MATCAT----------------',
-      'Adulto Elite':'FSKWSINGLES-ELTCAT----------------',
-      'Adulto Bronce Artistico':'FSKWSINGLES-BRACAT----------------',
-      'Adulto Bronce Especial Artistico':'FSKWSINGLES-BRECAT----------------',
-      'Adulto Plata Artistico':'FSKWSINGLES-SIACAT----------------',
-      'Adulto Oro Artistico':'FSKWSINGLES-GOACAT----------------',
-      'Adulto Master Artistico':'FSKWSINGLES-MAACAT----------------',
-      'Adulto Elite Artistico':'FSKWSINGLES-ELACAT----------------',
-      'Pre-Preliminary':'FSKWSINGLES-PPYCAT----------------',
-      'Pre-Preliminary Special':'FSKWSINGLES-PYSCAT----------------',
-      'Preliminary':'FSKWSINGLES-PRYCAT----------------',
-      'Juvenile':'FSKWSINGLES-JUVCAT----------------',
-      'Intermediate':'FSKWSINGLES-INTCAT----------------',
-
-      'Open Pre-Preliminary':'FSKWSINGLES-PPYCAT----------------',
-      'Open Pre-Preliminary Special':'FSKWSINGLES-PYSCAT----------------',
-      'Open Preliminary':'FSKWSINGLES-PRYCAT----------------',
-      'Open Juvenile':'FSKWSINGLES-JUVCAT----------------',
-      'Open Intermediate':'FSKWSINGLES-INTCAT----------------',
-
-      'Adult Bronze':'FSKWSINGLES-BRTCAT----------------',
-      'Adult Bronze Artistic':'FSKWSINGLES-BRACAT----------------',
-      'Adult Silver':'FSKWSINGLES-SITCAT----------------',
-      'Adult Silver Artistic':'FSKWSINGLES-SIACAT----------------',
-      'Adult Gold':'FSKWSINGLES-GOTCAT----------------',
-      'Adult Gold Artistic':'FSKWSINGLES-GOACAT----------------',
-      'Adult Master':'FSKWSINGLES-MATCAT----------------',
-      'Adult Master Artistic':'FSKWSINGLES-MAACAT----------------',
-      'Adult Elite':'FSKWSINGLES-ELTCAT----------------',
-      'Adult Elite Artistic':'FSKWSINGLES-ELACAT----------------',
-
-      'Bronze':'FSKWSINGLES-BRTCAT----------------',
-      'Bronze Artistic':'FSKWSINGLES-BRACAT----------------',
-      'Bronze Special Artistic':'FSKWSINGLES-BEACAT----------------',
-      
-      'Silver':'FSKWSINGLES-SITCAT----------------',
-      'Silver Artistic':'FSKWSINGLES-SIACAT----------------',
-      'Gold':'FSKWSINGLES-GOTCAT----------------',
-      'Gold Artistic':'FSKWSINGLES-GOACAT----------------',
-      'Master':'FSKWSINGLES-MATCAT----------------',
-      'Master Artistic':'FSKWSINGLES-MAACAT----------------',
-      'Elite':'FSKWSINGLES-ELTCAT----------------',
-      'Elite Artistic':'FSKWSINGLES-ELACAT----------------',
-
-
-
+      'PRE-BÁSICOS ESPECIAL':'FSKWSINGLES-PRECAT----------------',
+      'DEBUTANTES 2':'FSKWSINGLES-DE2CAT----------------',
+      'DEBUTANTES 2 ESPECIAL':'FSKWSINGLES-D2ECAT----------------',
+      'DEBUTANTES 1':'FSKWSINGLES-DE1CAT----------------',
+      'ADULTO BRONCE':'FSKWSINGLES-BRTCAT----------------',
+      'ADULTO PLATA':'FSKWSINGLES-SITCAT----------------',
+      'ADULTO ORO':'FSKWSINGLES-GOTCAT----------------',
+      'ADULTO MASTER':'FSKWSINGLES-MATCAT----------------',
+      'ADULTO ELITE':'FSKWSINGLES-ELTCAT----------------',
+      'ADULTO BRONCE ARTISTICO':'FSKWSINGLES-BRACAT----------------',
+      'ADULTO BRONCE ESPECIAL ARTISTICO':'FSKWSINGLES-BRECAT----------------',
+      'ADULTO PLATA ARTISTICO':'FSKWSINGLES-SIACAT----------------',
+      'ADULTO ORO ARTISTICO':'FSKWSINGLES-GOACAT----------------',
+      'ADULTO MASTER ARTISTICO':'FSKWSINGLES-MAACAT----------------',
+      'ADULTO ELITE ARTISTICO':'FSKWSINGLES-ELACAT----------------',
       'PRE-PRELIMINARY':'FSKWSINGLES-PPYCAT----------------',
       'PRE-PRELIMINARY SPECIAL':'FSKWSINGLES-PYSCAT----------------',
       'PRELIMINARY':'FSKWSINGLES-PRYCAT----------------',
       'JUVENILE':'FSKWSINGLES-JUVCAT----------------',
       'INTERMEDIATE':'FSKWSINGLES-INTCAT----------------',
-     
-
-
-
+      'OPEN PRE-PRELIMINARY':'FSKWSINGLES-PPYCAT----------------',
+      'OPEN PRE-PRELIMINARY SPECIAL':'FSKWSINGLES-PYSCAT----------------',
+      'OPEN PRELIMINARY':'FSKWSINGLES-PRYCAT----------------',
+      'OPEN JUVENILE':'FSKWSINGLES-JUVCAT----------------',
+      'OPEN INTERMEDIATE':'FSKWSINGLES-INTCAT----------------',
+      'ADULT BRONZE':'FSKWSINGLES-BRTCAT----------------',
+      'ADULT BRONZE ARTISTIC':'FSKWSINGLES-BRACAT----------------',
+      'ADULT SILVER':'FSKWSINGLES-SITCAT----------------',
+      'ADULT SILVER ARTISTIC':'FSKWSINGLES-SIACAT----------------',
+      'ADULT GOLD':'FSKWSINGLES-GOTCAT----------------',
+      'ADULT GOLD ARTISTIC':'FSKWSINGLES-GOACAT----------------',
+      'ADULT MASTER':'FSKWSINGLES-MATCAT----------------',
+      'ADULT MASTER ARTISTIC':'FSKWSINGLES-MAACAT----------------',
+      'ADULT ELITE':'FSKWSINGLES-ELTCAT----------------',
+      'ADULT ELITE ARTISTIC':'FSKWSINGLES-ELACAT----------------',
+      'BRONZE':'FSKWSINGLES-BRTCAT----------------',
+      'BRONZE ARTISTIC':'FSKWSINGLES-BRACAT----------------',
+      'BRONZE SPECIAL ARTISTIC':'FSKWSINGLES-BEACAT----------------',
+      'SILVER':'FSKWSINGLES-SITCAT----------------',
+      'SILVER ARTISTIC':'FSKWSINGLES-SIACAT----------------',
+      'GOLD':'FSKWSINGLES-GOTCAT----------------',
+      'GOLD ARTISTIC':'FSKWSINGLES-GOACAT----------------',
+      'MASTER':'FSKWSINGLES-MATCAT----------------',
+      'MASTER ARTISTIC':'FSKWSINGLES-MAACAT----------------',
+      'ELITE':'FSKWSINGLES-ELTCAT----------------',
+      'ELITE ARTISTIC':'FSKWSINGLES-ELACAT----------------'
   };
-  
+
   const etiquetasVaronilesCat = {
-    'Intermedios 2': 'FSKMSINGLES-IN2CAT----------------',
-    'Intermedios 1': 'FSKMSINGLES-IN1CAT----------------',
-    'Preliminar':'FSKMSINGLES-PRECAT----------------',
-    'Pre-preliminar':'FSKMSINGLES-PPRCAT----------------',
-    'Pre-preliminar Especial':'FSKMSINGLES-PPECAT----------------',
-    'Básicos':'FSKMSINGLES-BASCAT----------------',
-    'Basicos':'FSKMSINGLES-BASCAT----------------',
-    'Pre-Básicos':'FSKMSINGLES-PRBCAT----------------',
-    'Pre-Basicos':'FSKMSINGLES-PRBCAT----------------',
-    'PRE BÁSICOS':'FSKMSINGLES-PRBCAT----------------',
-    'Debutantes 2':'FSKMSINGLES-DE2CAT----------------',
-    'Debutantes 2 Especial':'FSKMSINGLES-D2ECAT----------------',
-    'Debutantes 1':'FSKMSINGLES-DE1CAT----------------',
-    'Adulto Bronce':'FSKMSINGLES-BRTCAT----------------',
-    'Adulto Plata':'FSKMSINGLES-SITCAT----------------',
-    'Adulto Oro':'FSKMSINGLES-GOTCAT----------------',
-    'Adulto Master':'FSKMSINGLES-MATCAT----------------',
-    'Adulto Elite':'FSKMSINGLES-ELTCAT----------------',
-    'Adulto Bronce Artistico':'FSKMSINGLES-BRACAT----------------',
-    'Adulto Bronce Especial Artistico':'FSKMSINGLES-BRECAT----------------',
-    'Adulto Plata Artistico':'FSKMSINGLES-SIACAT----------------',
-    'Adulto Oro Artistico':'FSKMSINGLES-GOACAT----------------',
-    'Adulto Master Artistico':'FSKMSINGLES-MAACAT----------------',
-    'Adulto Elite Artistico':'FSKMSINGLES-ELACAT----------------',
-    'Básicos Especial':'FSKMSINGLES-BAECAT----------------',
-    'Basicos Especial':'FSKMSINGLES-BAECAT----------------',
-    'Pre-Básicos Especial':'FSKMSINGLES-PRECAT----------------',
-    'Pre-Preliminary':'FSKMSINGLES-PPYCAT----------------',
-    'Pre-Preliminary Special':'FSKMSINGLES-PYSCAT----------------',
-    'Preliminary':'FSKMSINGLES-PRYCAT----------------',
-    'Juvenile':'FSKMSINGLES-JUVCAT----------------',
-    'Intermediate':'FSKMSINGLES-INTCAT----------------',
+      'INTERMEDIOS 2': 'FSKMSINGLES-IN2CAT----------------',
+      'INTERMEDIOS 1': 'FSKMSINGLES-IN1CAT----------------',
+      'PRELIMINAR':'FSKMSINGLES-PRECAT----------------',
+      'PRE-PRELIMINAR':'FSKMSINGLES-PPRCAT----------------',
+      'PRE-PRELIMINAR ESPECIAL':'FSKMSINGLES-PPECAT----------------',
+      'BÁSICOS':'FSKMSINGLES-BASCAT----------------',
+      'BASICOS':'FSKMSINGLES-BASCAT----------------',
+      'PRE-BÁSICOS':'FSKMSINGLES-PRBCAT----------------',
+      'PRE-BASICOS':'FSKMSINGLES-PRBCAT----------------',
+      'PRE BÁSICOS':'FSKMSINGLES-PRBCAT----------------',
+      'DEBUTANTES 2':'FSKMSINGLES-DE2CAT----------------',
+      'DEBUTANTES 2 ESPECIAL':'FSKMSINGLES-D2ECAT----------------',
+      'DEBUTANTES 1':'FSKMSINGLES-DE1CAT----------------',
+      'ADULTO BRONCE':'FSKMSINGLES-BRTCAT----------------',
+      'ADULTO PLATA':'FSKMSINGLES-SITCAT----------------',
+      'ADULTO ORO':'FSKMSINGLES-GOTCAT----------------',
+      'ADULTO MASTER':'FSKMSINGLES-MATCAT----------------',
+      'ADULTO ELITE':'FSKMSINGLES-ELTCAT----------------',
+      'ADULTO BRONCE ARTISTICO':'FSKMSINGLES-BRACAT----------------',
+      'ADULTO BRONCE ESPECIAL ARTISTICO':'FSKMSINGLES-BRECAT----------------',
+      'ADULTO PLATA ARTISTICO':'FSKMSINGLES-SIACAT----------------',
+      'ADULTO ORO ARTISTICO':'FSKMSINGLES-GOACAT----------------',
+      'ADULTO MASTER ARTISTICO':'FSKMSINGLES-MAACAT----------------',
+      'ADULTO ELITE ARTISTICO':'FSKMSINGLES-ELACAT----------------',
+      'BÁSICOS ESPECIAL':'FSKMSINGLES-BAECAT----------------',
+      'BASICOS ESPECIAL':'FSKMSINGLES-BAECAT----------------',
+      'PRE-BÁSICOS ESPECIAL':'FSKMSINGLES-PRECAT----------------',
+      'PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
+      'PRE-PRELIMINARY SPECIAL':'FSKMSINGLES-PYSCAT----------------',
+      'PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
+      'JUVENILE':'FSKMSINGLES-JUVCAT----------------',
+      'INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
+      'OPEN PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
+      'OPEN PRE-PRELIMINARY SPECIAL':'FSKMSINGLES-PYSCAT----------------',
+      'OPEN PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
+      'OPEN JUVENILE':'FSKMSINGLES-JUVCAT----------------',
+      'OPEN INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
+      'ADULT BRONZE':'FSKMSINGLES-BRTCAT----------------',
+      'ADULT BRONZE ARTISTIC':'FSKMSINGLES-BRACAT----------------',
+      'ADULT SILVER':'FSKMSINGLES-SITCAT----------------',
+      'ADULT SILVER ARTISTIC':'FSKMSINGLES-SIACAT----------------',
+      'ADULT GOLD':'FSKMSINGLES-GOTCAT----------------',
+      'ADULT GOLD ARTISTIC':'FSKMSINGLES-GOACAT----------------',
+      'ADULT MASTER':'FSKMSINGLES-MATCAT----------------',
+      'ADULT MASTER ARTISTIC':'FSKMSINGLES-MAACAT----------------',
+      'ADULT ELITE':'FSKMSINGLES-ELTCAT----------------',
+      'ADULT ELITE ARTISTIC':'FSKMSINGLES-ELACAT----------------',
+      'BRONZE':'FSKMSINGLES-BRTCAT----------------',
+      'BRONZE ARTISTIC':'FSKMSINGLES-BRACAT----------------',
+      'BRONZE SPECIAL ARTISTIC':'FSKMSINGLES-BEACAT----------------',
+      'SILVER':'FSKMSINGLES-SITCAT----------------',
+      'SILVER ARTISTIC':'FSKMSINGLES-SIACAT----------------',
+      'GOLD':'FSKMSINGLES-GOTCAT----------------',
+      'GOLD ARTISTIC':'FSKMSINGLES-GOACAT----------------',
+      'MASTER':'FSKMSINGLES-MATCAT----------------',
+      'MASTER ARTISTIC':'FSKMSINGLES-MAACAT----------------',
+      'ELITE':'FSKMSINGLES-ELTCAT----------------',
+      'ELITE ARTISTIC':'FSKMSINGLES-ELACAT----------------',
+      'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
+      'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
+      'SENIOR':'FSKMSINGLES-SENIOR----------------'
+  };
 
-    'Open Pre-Preliminary':'FSKMSINGLES-PPYCAT----------------',
-    'Open Pre-Preliminary Special':'FSKMSINGLES-PYSCAT----------------',
-    'Open Preliminary':'FSKMSINGLES-PRYCAT----------------',
-    'Open Juvenile':'FSKMSINGLES-JUVCAT----------------',
-    'Open Intermediate':'FSKMSINGLES-INTCAT----------------',
-
-    'Adult Bronze':'FSKMSINGLES-BRTCAT----------------',
-    'Adult Bronze Artistic':'FSKMSINGLES-BRACAT----------------',
-    'Adult Silver':'FSKMSINGLES-SITCAT----------------',
-    'Adult Silver Artistic':'FSKMSINGLES-SIACAT----------------',
-    'Adult Gold':'FSKMSINGLES-GOTCAT----------------',
-    'Adult Gold Artistic':'FSKMSINGLES-GOACAT----------------',
-    'Adult Master':'FSKMSINGLES-MATCAT----------------',
-    'Adult Master Artistic':'FSKMSINGLES-MAACAT----------------',
-    'Adult Elite':'FSKMSINGLES-ELTCAT----------------',
-    'Adult Elite Artistic':'FSKMSINGLES-ELACAT----------------',
-
-    'Bronze':'FSKMSINGLES-BRTCAT----------------',
-    'Bronze Artistic':'FSKMSINGLES-BRACAT----------------',
-    'Bronze Special Artistic':'FSKMSINGLES-BEACAT----------------',
-    'Silver':'FSKMSINGLES-SITCAT----------------',
-    'Silver Artistic':'FSKMSINGLES-SIACAT----------------',
-    'Gold':'FSKMSINGLES-GOTCAT----------------',
-    'Gold Artistic':'FSKMSINGLES-GOACAT----------------',
-    'Master':'FSKMSINGLES-MATCAT----------------',
-    'Master Artistic':'FSKMSINGLES-MAACAT----------------',
-    'Elite':'FSKMSINGLES-ELTCAT----------------',
-    'Elite Artistic':'FSKMSINGLES-ELACAT----------------',
-
-    'PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
-    'PRE-PRELIMINARY SPECIAL':'FSKMSINGLES-PYSCAT----------------',
-    'PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
-    'JUVENILE':'FSKMSINGLES-JUVCAT----------------',
-    'INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
-    'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
-    'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
-    'SENIOR':'FSKMSINGLES-SENIOR----------------',
-    
-};
-
-  // Mapeo de categoría a Id_Categoría
+  // Mapeo de categorías
   const categorias = {
       'PRE-INFANTIL A': 'PIA',
       'PRE-INFANTIL B': 'PIB',
@@ -346,39 +318,33 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'CLASE II':'CL2',
       'CLASE III':'CL3',
       'CLASE IV':'CL4',
-      'Clase I':'CL1',
-      'Clase II':'CL2',
-      'Clase III':'CL3',
-      'Clase IV':'CL4',
       'ADULTO':'ADU',
       'A':'AAA',
       'B':'BBB',
       'C':'CCC',
-      'D':'DDD',
-      'Mayor':'MAY',
-      'Adulto':'ADU',
-
-
-
+      'D':'DDD'
   };
 
-  // Verificar si el nivel requiere categoría
+  // Selección de etiqueta
   let etiqueta = '';
-
-  if (genero.toLowerCase() === 'femenino') {
-      etiqueta = etiquetasFemeniles[nivel] || etiquetasFemenilesCat[nivel];
+  if (generoKey === 'femenino') {
+      etiqueta = etiquetasFemeniles[nivelKey] || etiquetasFemenilesCat[nivelKey];
   } else {
-      etiqueta = etiquetasVaroniles[nivel] || etiquetasVaronilesCat[nivel];
+      etiqueta = etiquetasVaroniles[nivelKey] || etiquetasVaronilesCat[nivelKey];
   }
 
-  // Si la etiqueta requiere categoría, reemplazar "CAT" por el Id_Categoría
-  if (etiqueta && categoria) {
-      const idCategoria = categorias[categoria];
-      etiqueta = etiqueta.replace('CAT', idCategoria);
+  // Reemplazo de categoría
+  if (etiqueta && categoriaKey) {
+      const idCategoria = categorias[categoriaKey];
+      if (idCategoria) {
+          etiqueta = etiqueta.replace('CAT', idCategoria);
+      }
   }
 
   return etiqueta || 'Nivel o género no válido';
 }
+
+console.log(obtenerEtiqueta('PRELIMINAR','FEMENINO','JUVENIL A'))
 
 function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
   
