@@ -300,8 +300,8 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
 
   // Mapeo de categorías
   const categorias = {
-      'PRE-INFANTIL A': 'PIA',
-      'PRE-INFANTIL B': 'PIB',
+      'PRE-INFANTIL A': 'PRI',
+      'PRE-INFANTIL B': 'PRI',
       'INFANTIL A': 'INA',
       'INFANTIL B': 'INB',
       'INFANTIL C': 'INC',
