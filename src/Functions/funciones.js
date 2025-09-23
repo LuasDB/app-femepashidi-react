@@ -154,10 +154,10 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   // Etiquetas de niveles sin categoría
   const etiquetasFemeniles = {
       'AVANZADOS 2': 'FSKWSINGLES-----------------------',
-      'AVANZADOS 1': 'FSKWSINGLES-JUNIOR----------------',
+      'AVANZADOS 1': 'FSKWSINGLES-JUNIOA----------------',
       'ADVANCED NOVICE':'FSKWSINGLES-ADVNOV----------------',
-      'NOVICE':'FSKWSINGLES-ADVNOV----------------',
-      'NOVICIOS': 'FSKWSINGLES-ADVNOV----------------',
+      'NOVICE':'FSKWSINGLES-ADVNOA----------------',
+      'NOVICIOS': 'FSKWSINGLES-ADVNOA----------------',
       'JUNIOR':'FSKWSINGLES-JUNIOR----------------',
       'SENIOR':'FSKWSINGLES-SENIOR----------------',
   };
@@ -344,7 +344,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   return etiqueta || 'Nivel o género no válido';
 }
 
-console.log(obtenerEtiqueta('PRELIMINAR','FEMENINO','JUVENIL A'))
+console.log(obtenerEtiqueta('PRELIMINAR','FEMENINO','AVANZADOS 1 (JUNIOR) ISU'))
 
 function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
   
