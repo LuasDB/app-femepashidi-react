@@ -56,7 +56,7 @@ export default function Resultados(){
                     key={index}
                     onClick={()=>window.open(`https://femepashidi.com.mx/${item.carpeta}`)}>
                     <CardBody>
-                        <img src={`${server}images/results/${item.img}`} alt="Logo Evento" className='w-full'/>
+                        <img src={`${server}${item.img}`} alt="Logo Evento" className='w-full'/>
                     </CardBody>
                     <CardFooter className='flex items-center justify-center'>
                         {item.titulo}
