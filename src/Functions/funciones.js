@@ -155,9 +155,13 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   const etiquetasFemeniles = {
       'AVANZADOS 2': 'FSKWSINGLES-----------------------',
       'AVANZADOS 1': 'FSKWSINGLES-JUNIOA----------------',
+      'AVANZADOS 1 ABIERTO': 'FSKWSINGLES-JUNIOA----------------',
       'ADVANCED NOVICE':'FSKWSINGLES-ADVNOV----------------',
       'NOVICE':'FSKWSINGLES-ADVNOA----------------',
       'NOVICIOS': 'FSKWSINGLES-ADVNOA----------------',
+      'NOVICIOS ABIERTO': 'FSKWSINGLES-ADVNOA----------------',
+      'NOVICIOS (ISU)':'FSKWSINGLES-ADVNOV----------------',
+      'AVANZADOS 1 (ISU)':'FSKWSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKWSINGLES-JUNIOR----------------',
       'SENIOR':'FSKWSINGLES-SENIOR----------------',
   };
@@ -165,7 +169,10 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   const etiquetasVaroniles = {
       'AVANZADOS 2': 'FSKMSINGLES-----------------------',
       'AVANZADOS 1': 'FSKMSINGLES-JUNIOR----------------',
+      'AVANZADOS 1 ABIERTO': 'FSKMSINGLES-JUNIOA----------------',
       'NOVICIOS': 'FSKMSINGLES-ADVNOV----------------',
+      'NOVICIOS (ISU)':'FSKMSINGLES-ADVNOV----------------',
+      'AVANZADOS 1 (ISU)':'FSKMSINGLES-ADVNOV----------------',
       'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
       'NOVICE':'FSKMSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
