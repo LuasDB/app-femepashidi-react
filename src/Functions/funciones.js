@@ -179,7 +179,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'SENIOR':'FSKMSINGLES-SENIOR----------------',
   };
 
-  // Etiquetas de niveles con categoría (ejemplo reducido, pero con mayúsculas)
+  // Etiquetas de niveles con categoría 
   const etiquetasFemenilesCat = {
       'INTERMEDIOS 2': 'FSKWSINGLES-IN2CAT----------------',
       'INTERMEDIOS 1': 'FSKWSINGLES-IN1CAT----------------',
@@ -198,21 +198,21 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'DEBUTANTES 2 ESPECIAL':'FSKWSINGLES-D2ECAT----------------',
       'DEBUTANTES 1':'FSKWSINGLES-DE1CAT----------------',
       'ADULTO BRONCE':'FSKWSINGLES-BRTCAT----------------',
-      'ADULTO PLATA':'FSKWSINGLES-SITCAT----------------',
-      'ADULTO ORO':'FSKWSINGLES-GOTCAT----------------',
-      'ADULTO MASTER':'FSKWSINGLES-MATCAT----------------',
-      'ADULTO ELITE':'FSKWSINGLES-ELTCAT----------------',
       'ADULTO BRONCE ARTISTICO':'FSKWSINGLES-BRACAT----------------',
       'ADULTO BRONCE ESPECIAL ARTISTICO':'FSKWSINGLES-BRECAT----------------',
+      'ADULTO PLATA':'FSKWSINGLES-SITCAT----------------',
       'ADULTO PLATA ARTISTICO':'FSKWSINGLES-SIACAT----------------',
+      'ADULTO ORO':'FSKWSINGLES-GOTCAT----------------',
       'ADULTO ORO ARTISTICO':'FSKWSINGLES-GOACAT----------------',
+      'ADULTO MASTER':'FSKWSINGLES-MATCAT----------------',
       'ADULTO MASTER ARTISTICO':'FSKWSINGLES-MAACAT----------------',
+      'ADULTO ELITE':'FSKWSINGLES-ELTCAT----------------',
       'ADULTO ELITE ARTISTICO':'FSKWSINGLES-ELACAT----------------',
-      'PRE-PRELIMINARY':'FSKWSINGLES-PPYCAT----------------',
+      // 'PRE-PRELIMINARY':'FSKWSINGLES-PPYCAT----------------',
       'PRE-PRELIMINARY SPECIAL':'FSKWSINGLES-PYSCAT----------------',
-      'PRELIMINARY':'FSKWSINGLES-PRYCAT----------------',
-      'JUVENILE':'FSKWSINGLES-JUVCAT----------------',
-      'INTERMEDIATE':'FSKWSINGLES-INTCAT----------------',
+      // 'PRELIMINARY':'FSKWSINGLES-PRYCAT----------------',
+      // 'JUVENILE':'FSKWSINGLES-JUVCAT----------------',
+      // 'INTERMEDIATE':'FSKWSINGLES-INTCAT----------------',
       'OPEN PRE-PRELIMINARY':'FSKWSINGLES-PPYCAT----------------',
       'OPEN PRE-PRELIMINARY SPECIAL':'FSKWSINGLES-PYSCAT----------------',
       'OPEN PRELIMINARY':'FSKWSINGLES-PRYCAT----------------',
@@ -238,7 +238,26 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'MASTER':'FSKWSINGLES-MATCAT----------------',
       'MASTER ARTISTIC':'FSKWSINGLES-MAACAT----------------',
       'ELITE':'FSKWSINGLES-ELTCAT----------------',
-      'ELITE ARTISTIC':'FSKWSINGLES-ELACAT----------------'
+      'ELITE ARTISTIC':'FSKWSINGLES-ELACAT----------------',
+      //Nuevos
+      'DEBUTANTS':'FSKWSINGLES-DEBCAT----------------',
+      'BEGINNERS':'FSKWSINGLES-BEGCAT----------------',
+      'PRE-BASICS':'FSKWSINGLES-PRBCAT----------------',
+      'BASICS':'FSKWSINGLES-BASCAT----------------',
+      'ADVANCED BASICS':'FSKWSINGLES-ADBCAT----------------',
+      'PRE-PRELIMINARY':'FSKWSINGLES-PRPCAT----------------',
+      'PRELIMINARY':'FSKWSINGLES-PRECAT----------------',
+      'PRE-JUVENILE':'FSKWSINGLES-PRJCAT----------------',
+      'JUVENILE':'FSKWSINGLES-JUVCAT----------------',
+      'INTERMEDIATE':'FSKWSINGLES-INTCAT----------------',
+      //
+      'BRONCE ARTISTICA':'FSKWSINGLES-BRACAT----------------',
+      'PLATA ARTISTICA':'FSKWSINGLES-SIACAT----------------',
+      'ORO ARTISTICA':'FSKWSINGLES-GOACAT----------------',
+      'MASTER ARTISTICA':'FSKWSINGLES-MAACAT----------------',
+      'ELITE ARTISTICA':'FSKWSINGLES-ELACAT----------------',
+
+
   };
 
   const etiquetasVaronilesCat = {
@@ -269,11 +288,11 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'BÁSICOS ESPECIAL':'FSKMSINGLES-BAECAT----------------',
       'BASICOS ESPECIAL':'FSKMSINGLES-BAECAT----------------',
       'PRE-BÁSICOS ESPECIAL':'FSKMSINGLES-PRECAT----------------',
-      'PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
+      // 'PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
       'PRE-PRELIMINARY SPECIAL':'FSKMSINGLES-PYSCAT----------------',
-      'PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
-      'JUVENILE':'FSKMSINGLES-JUVCAT----------------',
-      'INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
+      // 'PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
+      // 'JUVENILE':'FSKMSINGLES-JUVCAT----------------',
+      // 'INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
       'OPEN PRE-PRELIMINARY':'FSKMSINGLES-PPYCAT----------------',
       'OPEN PRE-PRELIMINARY SPECIAL':'FSKMSINGLES-PYSCAT----------------',
       'OPEN PRELIMINARY':'FSKMSINGLES-PRYCAT----------------',
@@ -302,7 +321,24 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'ELITE ARTISTIC':'FSKMSINGLES-ELACAT----------------',
       'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
-      'SENIOR':'FSKMSINGLES-SENIOR----------------'
+      'SENIOR':'FSKMSINGLES-SENIOR----------------',
+      //Nuevos
+      'DEBUTANTS':'FSKMSINGLES-DEBCAT----------------',
+      'BEGINNERS':'FSKMSINGLES-BEGCAT----------------',
+      'PRE-BASICS':'FSKMSINGLES-PRBCAT----------------',
+      'BASICS':'FSKMSINGLES-BASCAT----------------',
+      'ADVANCED BASICS':'FSKMSINGLES-ADBCAT----------------',
+      'PRE-PRELIMINARY':'FSKMSINGLES-PRPCAT----------------',
+      'PRELIMINARY':'FSKMSINGLES-PRECAT----------------',
+      'PRE-JUVENILE':'FSKMSINGLES-PRJCAT----------------',
+      'JUVENILE':'FSKMSINGLES-JUVCAT----------------',
+      'INTERMEDIATE':'FSKMSINGLES-INTCAT----------------',
+      //
+      'BRONCE ARTISTICA':'FSKMSINGLES-BRACAT----------------',
+      'PLATA ARTISTICA':'FSKMSINGLES-SIACAT----------------',
+      'ORO ARTISTICA':'FSKMSINGLES-GOACAT----------------',
+      'MASTER ARTISTICA':'FSKMSINGLES-MAACAT----------------',
+      'ELITE ARTISTICA':'FSKMSINGLES-ELACAT----------------',
   };
 
   // Mapeo de categorías
@@ -325,11 +361,22 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'CLASE II':'CL2',
       'CLASE III':'CL3',
       'CLASE IV':'CL4',
+      'CLASS 1':'CL1',
+      'CLASS 2':'CL2',
+      'CLASS 3':'CL3',
+      'CLASS 4':'CL4',
       'ADULTO':'ADU',
       'A':'AAA',
       'B':'BBB',
       'C':'CCC',
-      'D':'DDD'
+      'D':'DDD',
+      //nUEVOS
+      'MINORS':'MIN',
+      'CHILDREN':'CHI',
+      'PRE-TEENS':'PRT',
+      'TEENS':'TEE',
+      'YOUNG ADULTS':'YAD',
+      'ESPECIAL':'TEE',
   };
 
   // Selección de etiqueta
