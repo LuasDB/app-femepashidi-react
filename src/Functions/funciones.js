@@ -351,6 +351,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   return etiqueta || 'Nivel o género no válido';
 }
 
+//Linea Para probar la función de etiqueta
 console.log(obtenerEtiqueta('PRELIMINAR','FEMENINO','AVANZADOS 1 (JUNIOR) ISU'))
 
 function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
