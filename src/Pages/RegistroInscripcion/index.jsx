@@ -114,7 +114,7 @@ export default function RegistroInscripcion(){
                     ...data.data,
                     categoria: obtenerCategoria(data.data.fecha_nacimiento, data.data.nivel_actual)
                 }
-                console.log(user)
+                console.log('verificando',user)
                 setFormData(user)
                 
                 setDataToSend({...dataToSend,
@@ -123,8 +123,8 @@ export default function RegistroInscripcion(){
                     categoria:user.categoria,
                     nivel_actual:data.data.nivel_actual
                 })
-                console.log('ES ADULTO?',data.data.nivel_actual.toLowerCase())
-                if(data.data.nivel_actual.toLowerCase().includes('adulto')){
+                console.log('ES ADULTO?')
+                if(user.categoria.toLowerCase().includes('adulto') ){
                     setisAdult(true)
                 }
             }
