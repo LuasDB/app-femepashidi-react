@@ -162,6 +162,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'NOVICIOS ABIERTO': 'FSKWSINGLES-ADVNOA----------------',
       'NOVICIOS (ISU)':'FSKWSINGLES-ADVNOV----------------',
       'AVANZADOS 1 (ISU)':'FSKWSINGLES-JUNIOR----------------',
+      'NOVICIOS (ADVANCED NOVICE) ISU':'FSKWSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKWSINGLES-JUNIOR----------------',
       'SENIOR':'FSKWSINGLES-SENIOR----------------',
   };
@@ -174,6 +175,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
       'NOVICIOS (ISU)':'FSKMSINGLES-ADVNOV----------------',
       'AVANZADOS 1 (ISU)':'FSKMSINGLES-JUNIOR----------------',
       'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
+      'NOVICIOS (ADVANCED NOVICE) ISU':'FSKMSINGLES-ADVNOV----------------',
       'NOVICE':'FSKMSINGLES-ADVNOV----------------',
       'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
       'SENIOR':'FSKMSINGLES-SENIOR----------------',
