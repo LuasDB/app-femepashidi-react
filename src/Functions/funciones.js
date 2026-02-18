@@ -31,120 +31,6 @@ function formatoFecha(fechaToEdit) {
     return `${day}-${mes}-${year}`;
   }
  
-
-
-function formatoNumeroMX(numero) {
-  return Number(numero).toLocaleString('es-MX', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-});
-}
-
-function formatoFolios(numero, digitos) {
-  // Convertir el número a cadena
-  let numStr = numero.toString();
-  
-  // Rellenar con ceros a la izquierda hasta alcanzar la longitud deseada
-  while (numStr.length < digitos) {
-    numStr = '0' + numStr;
-  }
-
-  return numStr;
-}
-
-function generateUID() {
-  const timestamp = Date.now().toString(36); // Convertir la marca de tiempo a base 36
-  const randomNumber = Math.random().toString(36).substring(2, 15); // Generar un número aleatorio y convertirlo a base 36
-  const uid = (timestamp + randomNumber).substring(0, 20); // Combinar ambos y truncar a 20 caracteres
-  return uid;
-}
-  
-
-  function formatoFechaHora(fechaToEdit){
-  
-  const fechaHora = fechaToEdit.toString().split('T');
-
-  return `${formatoFecha(fechaToEdit)} a las ${fechaHora[1]} HRS`
-}
-
-
-function sumaArray(array,item){
-
-  return array.reduce((sum,current)=>{
-    return sum + parseFloat(current[item])
-  },0)
-}
-
-function generarListaYears(initYear){
-
-  let year = []
-  let currentYear = new Date().getFullYear()
-  for (let index = initYear; index <= currentYear; index++) {
-    year.push(index)
-    
-  }
-
-  return year
-  
-}
-
-function ordenarPorItem(array,item){
-  return array.sort((a, b) => {
-      if (a[item] < b[item]) {
-          return -1;
-      }
-      if (a[item] > b[item]) {
-          return 1;
-      }
-      return 0;
-  });
-}
-function fechaHoraActual(){
-  const fecha = new Date();
-  const anio = fecha.getFullYear();
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Mes empieza desde 0
-  const dia = fecha.getDate().toString().padStart(2, '0');
-  const horas = fecha.getHours().toString().padStart(2, '0');
-  const minutos = fecha.getMinutes().toString().padStart(2, '0');
-  
-  return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
- 
-  
-}
-
-function formatoNombre(nombre) {
-  // Convierte todo el nombre a minúsculas y luego lo divide por espacios
-  return nombre
-    .toLowerCase()
-    .split(' ') // Divide el nombre en palabras
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
-    .join(' '); // Une las palabras nuevamente en una cadena
-}
-
-function fechaActual() {
-  const fecha = new Date();
-  const year = fecha.getFullYear();
-  const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Meses empiezan en 0
-  const day = String(fecha.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-}
-
-function obtenerTimestamp() {
-  const ahora = new Date();
-  
-  const horas = String(ahora.getHours()).padStart(2, '0');
-  const minutos = String(ahora.getMinutes()).padStart(2, '0');
-  const segundos = String(ahora.getSeconds()).padStart(2, '0');
-  const milisegundos = String(ahora.getMilliseconds()).padStart(3, '0');
-
-  return `${horas}${minutos}${segundos}${milisegundos}`;
-}
-
-function formatoDosDigitos(numero) {
-  return String(numero).padStart(2, '0');
-}
-
 function obtenerEtiqueta(nivel, genero, categoria = "") {
   // Normalizamos entradas
   const nivelKey = nivel.trim().toUpperCase();
@@ -402,6 +288,120 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
 
 //Linea Para probar la función de etiqueta
 console.log(obtenerEtiqueta('PRELIMINAR','FEMENINO','AVANZADOS 1 (JUNIOR) ISU'))
+
+function formatoNumeroMX(numero) {
+  return Number(numero).toLocaleString('es-MX', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
+}
+
+function formatoFolios(numero, digitos) {
+  // Convertir el número a cadena
+  let numStr = numero.toString();
+  
+  // Rellenar con ceros a la izquierda hasta alcanzar la longitud deseada
+  while (numStr.length < digitos) {
+    numStr = '0' + numStr;
+  }
+
+  return numStr;
+}
+
+function generateUID() {
+  const timestamp = Date.now().toString(36); // Convertir la marca de tiempo a base 36
+  const randomNumber = Math.random().toString(36).substring(2, 15); // Generar un número aleatorio y convertirlo a base 36
+  const uid = (timestamp + randomNumber).substring(0, 20); // Combinar ambos y truncar a 20 caracteres
+  return uid;
+}
+  
+
+  function formatoFechaHora(fechaToEdit){
+  
+  const fechaHora = fechaToEdit.toString().split('T');
+
+  return `${formatoFecha(fechaToEdit)} a las ${fechaHora[1]} HRS`
+}
+
+
+function sumaArray(array,item){
+
+  return array.reduce((sum,current)=>{
+    return sum + parseFloat(current[item])
+  },0)
+}
+
+function generarListaYears(initYear){
+
+  let year = []
+  let currentYear = new Date().getFullYear()
+  for (let index = initYear; index <= currentYear; index++) {
+    year.push(index)
+    
+  }
+
+  return year
+  
+}
+
+function ordenarPorItem(array,item){
+  return array.sort((a, b) => {
+      if (a[item] < b[item]) {
+          return -1;
+      }
+      if (a[item] > b[item]) {
+          return 1;
+      }
+      return 0;
+  });
+}
+function fechaHoraActual(){
+  const fecha = new Date();
+  const anio = fecha.getFullYear();
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Mes empieza desde 0
+  const dia = fecha.getDate().toString().padStart(2, '0');
+  const horas = fecha.getHours().toString().padStart(2, '0');
+  const minutos = fecha.getMinutes().toString().padStart(2, '0');
+  
+  return `${anio}-${mes}-${dia}T${horas}:${minutos}`;
+ 
+  
+}
+
+function formatoNombre(nombre) {
+  // Convierte todo el nombre a minúsculas y luego lo divide por espacios
+  return nombre
+    .toLowerCase()
+    .split(' ') // Divide el nombre en palabras
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
+    .join(' '); // Une las palabras nuevamente en una cadena
+}
+
+function fechaActual() {
+  const fecha = new Date();
+  const year = fecha.getFullYear();
+  const month = String(fecha.getMonth() + 1).padStart(2, '0'); // Meses empiezan en 0
+  const day = String(fecha.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function obtenerTimestamp() {
+  const ahora = new Date();
+  
+  const horas = String(ahora.getHours()).padStart(2, '0');
+  const minutos = String(ahora.getMinutes()).padStart(2, '0');
+  const segundos = String(ahora.getSeconds()).padStart(2, '0');
+  const milisegundos = String(ahora.getMilliseconds()).padStart(3, '0');
+
+  return `${horas}${minutos}${segundos}${milisegundos}`;
+}
+
+function formatoDosDigitos(numero) {
+  return String(numero).padStart(2, '0');
+}
+
+ 
 
 function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
   
