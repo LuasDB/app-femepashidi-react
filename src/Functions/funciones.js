@@ -39,33 +39,34 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
 
   // Etiquetas de niveles sin categoría
   const etiquetasFemeniles = {
-      'AVANZADOS 2': 'FSKWSINGLES-----------------------',
-      'AVANZADOS 1': 'FSKWSINGLES-JUNIOA----------------',
-      'AVANZADOS 1 ABIERTO': 'FSKWSINGLES-JUNIOA----------------',
-      'ADVANCED NOVICE':'FSKWSINGLES-ADVNOV----------------',
-      'NOVICE':'FSKWSINGLES-ADVNOA----------------',
-      'NOVICIOS': 'FSKWSINGLES-ADVNOA----------------',
-      'NOVICIOS ABIERTO': 'FSKWSINGLES-ADVNOA----------------',
-      'NOVICIOS (ISU)':'FSKWSINGLES-ADVNOV----------------',
-      'AVANZADOS 1 (ISU)':'FSKWSINGLES-JUNIOR----------------',
-      'NOVICIOS (ADVANCED NOVICE) ISU':'FSKWSINGLES-ADVNOV----------------',
-      'JUNIOR':'FSKWSINGLES-JUNIOR----------------',
-      'SENIOR':'FSKWSINGLES-SENIOR----------------',
-  };
+  'ADVANCED NOVICE': 'FSKWSINGLES-ADVNOV----------------',
+  'AVANZADOS 1': 'FSKWSINGLES-JUNIOR----------------',
+  'AVANZADOS 1 (ISU)': 'FSKWSINGLES-JUNIOR----------------',
+  'AVANZADOS 1 ABIERTO': 'FSKWSINGLES-JUNIOA----------------',
+  'AVANZADOS 2': 'FSKWSINGLES-----------------------',
+  'JUNIOR': 'FSKWSINGLES-JUNIOR----------------',
+  'NOVICE': 'FSKWSINGLES-ADVNOA----------------',
+  'NOVICIOS': 'FSKWSINGLES-ADVNOA----------------',
+  'NOVICIOS (ADVANCED NOVICE) ISU': 'FSKWSINGLES-ADVNOV----------------',
+  'NOVICIOS (ISU)': 'FSKWSINGLES-ADVNOV----------------',
+  'NOVICIOS ABIERTO': 'FSKWSINGLES-ADVNOA----------------',
+  'SENIOR': 'FSKWSINGLES-SENIOR----------------',
+}
   
   const etiquetasVaroniles = {
-      'AVANZADOS 2': 'FSKMSINGLES-----------------------',
-      'AVANZADOS 1': 'FSKMSINGLES-JUNIOR----------------',
-      'AVANZADOS 1 ABIERTO': 'FSKMSINGLES-JUNIOA----------------',
-      'NOVICIOS': 'FSKMSINGLES-ADVNOV----------------',
-      'NOVICIOS (ISU)':'FSKMSINGLES-ADVNOV----------------',
-      'AVANZADOS 1 (ISU)':'FSKMSINGLES-JUNIOR----------------',
-      'ADVANCED NOVICE':'FSKMSINGLES-ADVNOV----------------',
-      'NOVICIOS (ADVANCED NOVICE) ISU':'FSKMSINGLES-ADVNOV----------------',
-      'NOVICE':'FSKMSINGLES-ADVNOV----------------',
-      'JUNIOR':'FSKMSINGLES-JUNIOR----------------',
-      'SENIOR':'FSKMSINGLES-SENIOR----------------',
-  };
+  'ADVANCED NOVICE': 'FSKMSINGLES-ADVNOV----------------',
+  'AVANZADOS 1': 'FSKMSINGLES-JUNIOR----------------',
+  'AVANZADOS 1 (ISU)': 'FSKMSINGLES-JUNIOR----------------',
+  'AVANZADOS 1 ABIERTO': 'FSKMSINGLES-JUNIOA----------------',
+  'AVANZADOS 2': 'FSKMSINGLES-----------------------',
+  'JUNIOR': 'FSKMSINGLES-JUNIOR----------------',
+  'NOVICE': 'FSKMSINGLES-ADVNOV----------------',
+  'NOVICIOS': 'FSKMSINGLES-ADVNOV----------------',
+  'NOVICIOS (ADVANCED NOVICE) ISU': 'FSKMSINGLES-ADVNOV----------------',
+  'NOVICIOS (ISU)': 'FSKMSINGLES-ADVNOV----------------',
+  'NOVICIOS ABIERTO': 'FSKMSINGLES-ADVNOA----------------',
+  'SENIOR': 'FSKMSINGLES-SENIOR----------------',
+};
 
   // Etiquetas de niveles con categoría 
   const etiquetasFemenilesCat = {
@@ -287,7 +288,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
 }
 
 //Linea Para probar la función de etiqueta
-console.log(obtenerEtiqueta('PRELIMINAR','FEMENINO','AVANZADOS 1 (JUNIOR) ISU'))
+console.log(obtenerEtiqueta('AVANZADOS 1','FEMENINO','AVANZADOS 1 (JUNIOR) ISU'))
 
 function formatoNumeroMX(numero) {
   return Number(numero).toLocaleString('es-MX', {
@@ -401,9 +402,7 @@ function formatoDosDigitos(numero) {
   return String(numero).padStart(2, '0');
 }
 
- 
-
-function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
+function obtenerCategoria(fechaNacimiento, nivel, isAdult=false) {
   
   const fecha = new Date(fechaNacimiento);
   const cutoffDate = new Date('2025-07-01');
@@ -411,6 +410,7 @@ function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
   const edadAlCorte = cutoffDate.getFullYear() - fecha.getFullYear() - (
     cutoffDate < new Date(cutoffDate.getFullYear(), fecha.getMonth(), fecha.getDate()) ? 1 : 0
   );
+  console.log(edadAlCorte);
 
   const time = fecha.getTime();
 
@@ -465,6 +465,7 @@ function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
       new Date('1957-06-30').getTime()
     ]
   };
+    console.log('IsAdult:',isAdult)
 
   if (isAdult) {
     // Competidor adulto → buscar en rangos adultos
@@ -478,18 +479,25 @@ function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
       }
     }
   } else {
+    console.log('[NIVELES ISU]')
     // Niveles ISU
     if (nivel === 'NOVICIOS') {
       if (edadAlCorte >= 10 && edadAlCorte < 16) {
         return 'NOVICIOS (ADVANCED NOVICE) ISU';
+      }else{
+        return 'NOVICIOS ABIERTO';
       }
     } else if (nivel === 'AVANZADOS 1') {
       if (edadAlCorte >= 13 && edadAlCorte < 19) {
         return 'AVANZADOS 1 (JUNIOR) ISU';
+      }else{
+        return 'AVANZADOS 1 ABIERTO';
       }
     } else if (nivel === 'AVANZADOS 2') {
       if (edadAlCorte >= 17) {
         return 'AVANZADOS 2 (SENIOR) ISU';
+      }else{
+        return 'AVANZADOS 2 ABIERTO';
       }
     } else {
       // Otras categorías juveniles
@@ -508,7 +516,7 @@ function obtenerCategoria(fechaNacimiento, nivel, isAdult) {
 
   return 'Sin categoría aplicable';
 }
-
+console.log(obtenerCategoria('2005-11-11','AVANZADOS 1'))
 
 
 export { 
