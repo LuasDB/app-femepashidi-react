@@ -37,6 +37,21 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   const generoKey = genero.trim().toLowerCase();
   const categoriaKey = categoria.trim().toUpperCase();
 
+
+  if(nivelKey === 'AVANZADOS 1' && categoriaKey === 'AVANZADOS 1 ABIERTO' && generoKey ==='femenino'){
+    return 'FSKWSINGLES-JUNIOA----------------'
+  }else if(nivelKey === 'AVANZADOS 1' && categoriaKey === 'AVANZADOS 1 ABIERTO' && generoKey ==='masculino'){
+    return 'FSKMSINGLES-JUNIOA----------------'
+  }
+
+  if(nivelKey === 'NOVICIOS' && categoriaKey === 'NOVICIOS ABIERTO' && generoKey ==='femenino'){
+    return 'FSKWSINGLES-ADVNOA----------------'
+  }else if(nivelKey === 'NOVICIOS' && categoriaKey === 'NOVICIOS ABIERTO' && generoKey ==='masculino'){
+    return 'FSKMSINGLES-ADVNOA----------------'
+  }
+  
+ 
+  
   // Etiquetas de niveles sin categoría
   const etiquetasFemeniles = {
   'ADVANCED NOVICE': 'FSKWSINGLES-ADVNOV----------------',
@@ -46,10 +61,10 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   'AVANZADOS 2': 'FSKWSINGLES-----------------------',
   'JUNIOR': 'FSKWSINGLES-JUNIOR----------------',
   'NOVICE': 'FSKWSINGLES-ADVNOA----------------',
-  'NOVICIOS': 'FSKWSINGLES-ADVNOA----------------',
+  'NOVICIOS': 'FSKWSINGLES-ADVNOV----------------',
   'NOVICIOS (ADVANCED NOVICE) ISU': 'FSKWSINGLES-ADVNOV----------------',
   'NOVICIOS (ISU)': 'FSKWSINGLES-ADVNOV----------------',
-  'NOVICIOS ABIERTO': 'FSKWSINGLES-ADVNOA----------------',
+  // 'NOVICIOS ABIERTO': 'FSKWSINGLES-ADVNOA----------------',
   'SENIOR': 'FSKWSINGLES-SENIOR----------------',
 }
   
@@ -64,7 +79,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
   'NOVICIOS': 'FSKMSINGLES-ADVNOV----------------',
   'NOVICIOS (ADVANCED NOVICE) ISU': 'FSKMSINGLES-ADVNOV----------------',
   'NOVICIOS (ISU)': 'FSKMSINGLES-ADVNOV----------------',
-  'NOVICIOS ABIERTO': 'FSKMSINGLES-ADVNOA----------------',
+  // 'NOVICIOS ABIERTO': 'FSKMSINGLES-ADVNOA----------------',
   'SENIOR': 'FSKMSINGLES-SENIOR----------------',
 };
 
@@ -288,7 +303,7 @@ function obtenerEtiqueta(nivel, genero, categoria = "") {
 }
 
 //Linea Para probar la función de etiqueta
-console.log(obtenerEtiqueta('AVANZADOS 1','FEMENINO','AVANZADOS 1 (JUNIOR) ISU'))
+console.log(obtenerEtiqueta('PRE-BÁSICOS','FEMENINO','MAYOR'))
 
 function formatoNumeroMX(numero) {
   return Number(numero).toLocaleString('es-MX', {
