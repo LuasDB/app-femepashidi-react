@@ -15,7 +15,7 @@ const PhotoGallery = () => {
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     setFilesList([...filesList, file])
-    
+
 
     if (file) {
       const reader = new FileReader();
@@ -25,11 +25,13 @@ const PhotoGallery = () => {
       };
       reader.readAsDataURL(file);
     }
-    
 
-    
-    
+
+
+
   };
+
+  const esVideo = (file) => Boolean(file) && file.type.startsWith('video/');
 
   const removePhoto = (index) => {
     setPhotos(photos.filter((_, i) => i !== index));
@@ -41,7 +43,7 @@ const PhotoGallery = () => {
 
 
     if(photos.length === 0 || titulo === ''){
-      Swal.fire('Antención', 'Es necesario que coloques el titulo y subas por lo menos una imagen para poder actualizar tu galeria','warning')
+      Swal.fire('Antención', 'Es necesario que coloques el titulo y subas por lo menos una imagen o video para poder actualizar tu galeria','warning')
       return
     }
 
@@ -88,9 +90,12 @@ const PhotoGallery = () => {
 
      
         {photos.map((photo, index) => (
-          <Col md="3" key={index}>
+          <Col md={esVideo(filesList[index]) ? '12' : '3'} key={index}>
             <Card className='relative'>
-              <CardImg top src={photo} alt="Photo" className='h-80'/>            
+              {esVideo(filesList[index])
+                ? <video src={photo} controls muted className='w-100' style={{ maxHeight: '70vh' }} />
+                : <CardImg top src={photo} alt="Photo" className='h-80'/>
+              }
                 <FaTimes  onClick={() => removePhoto(index)} className='absolute top-1 right-1 cursor-pointer text-red-500' />
             </Card>
           </Col>
@@ -99,10 +104,11 @@ const PhotoGallery = () => {
 
     
 
-      {/* Input oculto para subir fotos */}
+      {/* Input oculto para subir fotos o videos */}
       <Input
         type="file"
         id="photoInput"
+        accept="image/*,video/*"
         style={{ display: 'none' }}
         onChange={handlePhotoChange}
       />
@@ -110,9 +116,12 @@ const PhotoGallery = () => {
       {/* Botón para guardar los cambios */}
       <Button color="success" className="mt-3" onClick={hanldeUpdateGallery}>Guardar nueva galeria</Button>
 
-      <GaleriaImagenes  images={photos} titulo={titulo}/>
+      <GaleriaImagenes
+        items={photos.map((src, index) => ({ src, tipo: esVideo(filesList[index]) ? 'video' : 'imagen' }))}
+        titulo={titulo}
+      />
     </div>
-    
+
   );
 };
 
